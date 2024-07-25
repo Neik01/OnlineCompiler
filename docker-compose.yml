@@ -1,0 +1,14 @@
+services:
+  backend:
+    container_name: backend
+    build: ./Backend
+    ports:
+      - 8080:8080
+     
+
+  frontend:
+    container_name: frontend
+    build: ./compiler-online-app
+    ports:
+      - 4200:80
+    
