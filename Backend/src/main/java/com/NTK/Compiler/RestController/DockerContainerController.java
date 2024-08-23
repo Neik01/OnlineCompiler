@@ -1,13 +1,15 @@
 package com.NTK.Compiler.RestController;
 
+import com.github.dockerjava.api.model.Container;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class HelloController {
+import java.util.Iterator;
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Hello again";
-    }
+@RestController
+@AllArgsConstructor
+public class DockerContainerController {
+
+
 }

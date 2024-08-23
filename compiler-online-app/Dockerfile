@@ -6,11 +6,15 @@ FROM node:20.11.1 as build
 # Set the working directory
 WORKDIR /usr/local/app
 
+COPY package*.json ./
+
 # Add the source code to app
-COPY ./ /usr/local/app/
+
 
 # Install all the dependencies
 RUN npm install
+
+COPY . .
 
 # Generate the build of the application
 RUN npm run build

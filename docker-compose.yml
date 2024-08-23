@@ -1,14 +1,20 @@
 services:
   backend:
     container_name: backend
+    image: ntkitn/backend
     build: ./Backend
     ports:
       - 8080:8080
-     
+    
 
   frontend:
     container_name: frontend
+    image: ntkitn/frontend
     build: ./compiler-online-app
     ports:
       - 4200:80
+    volumes:
+      - ./compiler-online-app/dist/compiler-online-app:/usr/share/nginx/html
+
+ 
     
