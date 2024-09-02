@@ -4,13 +4,22 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { EmptyRoomComponent } from './components/empty-room/empty-room.component';
 import { CodeRoomComponent } from './components/code-room/code-room.component';
+import { AuthPageComponent } from './pages/auth-page/auth-page.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
+
+  {path:"auth",component:AuthPageComponent,children:[
+    {path:"login",component:LoginComponent},
+    {path:"register",component:RegisterComponent}
+  ]},
   {path:"",component:HomePageComponent, children:[
 
     {path:"",component:EmptyRoomComponent},
     {path:":id",component:CodeRoomComponent}
   ]},
+  
   {path:"**",redirectTo:""}
 ];
 

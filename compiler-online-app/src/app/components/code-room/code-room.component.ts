@@ -3,6 +3,7 @@ import { EditorView, basicSetup } from '@codemirror/basic-setup';
 import { EditorState } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
 import { dracula } from '@uiw/codemirror-theme-dracula';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 
 @Component({
   selector: 'app-code-room',
@@ -10,5 +11,22 @@ import { dracula } from '@uiw/codemirror-theme-dracula';
   styleUrls: ['./code-room.component.css']
 })
 export class CodeRoomComponent{
-  content = '';
+  content = 'bfkj';
+
+  constructor(){}
+
+  getCMInstance(editor:CodemirrorComponent){
+    console.log(editor.codeMirror);
+    editor.codeMirror.on('change',(instance,changes)=>{
+
+      console.log(changes);
+      console.log(instance.getValue());
+    })
+    
+  }
+
+  onModelChange(){
+    // console.log("Content:"+this.content);
+    
+  }
 }

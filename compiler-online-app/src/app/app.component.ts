@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { WebsocketService } from './services/websocket.service';
 
 
 @Component({
@@ -6,8 +8,12 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent{
+export class AppComponent {
   
+
+
+
+  constructor() {}
 
   
 }
