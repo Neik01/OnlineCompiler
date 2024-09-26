@@ -8,12 +8,13 @@ import { WebsocketService } from './services/websocket.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   
+  constructor(public websocket:WebsocketService) {}
 
-
-
-  constructor() {}
+  ngOnInit(): void {
+    
+  }
 
   
 }

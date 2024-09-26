@@ -14,7 +14,7 @@ const routes: Routes = [
     {path:"login",component:LoginComponent},
     {path:"register",component:RegisterComponent}
   ]},
-  {path:"",component:HomePageComponent, children:[
+  {path:"code",component:HomePageComponent, children:[
 
     {path:"",component:EmptyRoomComponent},
     {path:":id",component:CodeRoomComponent}

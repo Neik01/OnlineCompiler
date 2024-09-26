@@ -1,11 +1,15 @@
-
-<div class="flex-1 flex h-screen">
-    <app-sidebar class="sidebar fixed top-0 lg:left-0 
-     bottom-0 p-2 w-[250px] overflow-y-auto text-center
-    bg-slate-500"></app-sidebar>
-
-    <div class="flex-1 ml-[250px] h-full pl-1 bg-white overflow-auto">
-        <app-header></app-header>
-        <router-outlet></router-outlet>
+<div class="h-screen flex flex-col">
+    
+    <!-- header -->
+    <app-header></app-header>
+    <!-- main content -->
+    <div class="flex-1 flex mt-11">
+    
+        <app-sidebar ></app-sidebar>
+    
+        <div class="flex-1 h-full w-full bg-white overflow-auto z-10" [ngClass]="isSidebarOpen?'ml-64':'ml-12'">
+    
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>

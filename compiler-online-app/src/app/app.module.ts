@@ -13,6 +13,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -32,9 +34,16 @@ import { RegisterComponent } from './components/register/register.component';
     AppRoutingModule,
     FormsModule,
     CodemirrorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide:HTTP_INTERCEPTORS,
+      useClass:AuthInterceptor,
+      multi:true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

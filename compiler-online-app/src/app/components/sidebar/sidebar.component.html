@@ -1,6 +1,98 @@
-<div class="text-slate-100 text-lg">
-    <div class="p-2.5 mt-1 flex items-center">
-        <h1 class="font-bold  ml-3">Code Share</h1>
+<div class="text-slate-100 text-lg h-full  flex flex-1 sidebar fixed lg:left-0 
+ overflow-y-auto text-center bg-slate-500">
+  <!-- side bar -->
+    <div class="w-12 h-full  border-r-slate-700 border-r-2 bg-slate-700">
+
+     <!-- New file -->
+      <div class=" pb-2 pt-3 pl-2 cursor-pointer border-b-2 border-b-slate-500">
+        
+        <button (click)="newFile()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+       
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- all file -->
+      <div class="hover:bg-slate-700 pb-2 pt-3 pl-2 cursor-pointer border-b-2 border-b-slate-500">
+    <button (click)="this.open()">
+      
+      <svg
+      class="size-8"
+      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+      </svg>
+      
+    </button>
+      </div>
+
+      <!-- settings -->
+      <div class="hover:bg-slate-700 pb-2 pt-3 pl-2 cursor-pointer border-b-2 border-b-slate-500">
+        <svg 
+        class="size-8 "
+        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+      </div>
+
     </div>
-    <p>Síde bar</p>
+
+
+<!-- Main menu -->
+    <div class="w-52 ml-2 bg-slate-500" [ngClass]="isOpen?'':'hidden'">
+      <div class="pt-1.5 pr-2 items-end justify-end text-right">
+        <button (click)="close()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        
+        </button>
+      </div>
+
+      <div class="text-start text-2xl justify-start items-start">
+        <h2>File của bạn</h2>
+      </div>
+
+      <div class="flex pt-1 flex-col" >
+        <div class="flex " *ngIf="isAddNew">
+          <div class="w-6 mr-1 ">
+            <svg viewBox="0 0 24 24" class="size-6 "  fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M10 17L8 15L10 13M14 13L16 15L14 17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V8C13 8.55228 13.4477 9 14 9H19"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g>
+            </svg>
+          </div>
+
+          <input #inputElement
+          (blur)="onBlur($event)"
+          (keydown.enter)="onEnterPressed($event)" type="text" class=" w-40 bg-slate-500 focus:outline-none focus:ring-0 focus:border-black focus:border-b-[1px]" >
+          
+        </div>
+
+      <div *ngFor="let codeRoom of data" class="flex pt-1 flex-col">
+        <div class="flex ">
+          <div class="w-6 mr-1 ">
+            <svg viewBox="0 0 24 24" class="size-6 "  fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M10 17L8 15L10 13M14 13L16 15L14 17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V8C13 8.55228 13.4477 9 14 9H19"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g>
+            </svg>
+          </div>
+
+          <a class="truncate max-w-46" [routerLink]="['/code',codeRoom.id]">{{codeRoom.name}} </a>
+          
+        </div>
+
+      </div>
+   </div>
+  
 </div>
+      
+  <!-- main content -->
+ 

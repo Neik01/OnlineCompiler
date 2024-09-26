@@ -12,33 +12,25 @@ export class WebsocketService {
   constructor() { }
 
   private stompClient!: Stomp.CompatClient  ;
-  private isConnected = new BehaviorSubject<boolean>(false);
+  public isConnected = new BehaviorSubject<boolean>(false);
 
-  public connect() {
-    const socket = new SockJS('http://localhost:8080/ws'); // Adjust URL as needed
-    this.stompClient = Stomp.Stomp.over(socket);
-
-    this.stompClient.connect({}, (frame: any) => {
-      console.log('Connected: ' + frame);
-      this.isConnected.next(true);
-
-      // Subscribe to a topic
-      this.stompClient?.subscribe('/topic/code', message => {
-        console.log('Received: ' + message.body);
-        // Handle the received message
-      });
-    }, (error: any) => {
-      console.error('Error: ' + error);
-      this.isConnected.next(false);
+  public subscribe(destination:string,callbackFn:(message:any)=>void) {
+    console.log("subcscribe: " + destination);
+    
+    this.stompClient?.subscribe(destination, message => {
+      console.log('Received: ' + message.body);
+      // Handle the received message
+      callbackFn(message);
     });
+    
   }
 
   public disconnect() {
     if (this.stompClient !== null) {
-      this.stompClient.disconnect(() => {
-        console.log('Disconnected');
-        this.isConnected.next(false);
-      });
+     this.stompClient.deactivate().then(()=>{
+      console.log('deactivate');
+      this.isConnected.next(false);
+     });
     }
   }
 
@@ -51,4 +43,38 @@ export class WebsocketService {
   public getConnectionStatus() {
     return this.isConnected.asObservable();
   }
+
+  public addUser(){
+    const email = localStorage.getItem('email');
+    this.stompClient.subscribe(`user/${email}/queue/messages`,message =>{
+      console.log('Subscribe user destination: ' + message.body);
+      // Handle the received message
+    })
+  }
+
+  public init(){
+  
+    const socket = new SockJS('http://localhost:8080/ws'); 
+    this.stompClient = Stomp.Stomp.over(socket);
+    const token = localStorage.getItem("jwtToken")
+
+    const header:Stomp.StompHeaders ={
+      Authorization: `Bearer ${token}`,
+
+    } 
+
+    this.stompClient.connect(
+      header, 
+      (frame: any) => {
+      console.log('Connected: ' + frame);
+      this.isConnected.next(true);
+
+    }, 
+      (error: any) => {
+      console.error('Error: ' + error);
+      this.isConnected.next(false);
+    });
+  }
+
+  
 }

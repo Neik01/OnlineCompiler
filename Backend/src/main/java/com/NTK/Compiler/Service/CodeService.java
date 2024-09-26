@@ -5,6 +5,10 @@ import com.NTK.Compiler.Repository.CodeRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -13,19 +17,37 @@ public class CodeService {
 
     private final CodeRoomRepository codeRepository;
 
-    public void save(CodeRoom snippet) {
-        codeRepository.save(snippet);
+
+    public List<CodeRoom> findAll(){
+
+        return codeRepository.findAll();
     }
 
-    public CodeRoom findById(String id) {
-        return codeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found"));
+    public CodeRoom save(CodeRoom room) {
+        return codeRepository.save(room);
     }
 
-//    public CodeRoom getCodeSnippet(String id, boolean createCodeSnippet){
-//
-//        return codeRepository.findById(id)
-//                .map()
-//
-//    }
+    public Optional<CodeRoom> findById(String id) {
+        
+        return codeRepository.findById(id);
+
+
+    }
+
+    public List<CodeRoom> findAllByUserId(String userId){
+        return Optional.ofNullable(codeRepository.findAllByUserId(userId))
+                .stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    public void updateContent(String content,String id) {
+        Optional<CodeRoom> codeRoom = this.codeRepository.findById(id);
+
+        if (codeRoom.isPresent()){
+            codeRoom.get().setContent(content);
+            this.codeRepository.save(codeRoom.get());
+        }
+    }
+
 }

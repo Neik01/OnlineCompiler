@@ -1,35 +1,64 @@
 package com.NTK.Compiler.RestController;
 
+import com.NTK.Compiler.DTO.CodeRoomDTO;
+import com.NTK.Compiler.Entities.User;
+import com.NTK.Compiler.Payload.Request.CodeChangePayload;
 import com.NTK.Compiler.Entities.CodeRoom;
 import com.NTK.Compiler.Service.CodeService;
+import com.NTK.Compiler.Utils.ProjectMapper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.Code;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/code")
 public class CodeRoomController {
 
     private final CodeService codeService;
 
-//    @PostMapping("/save")
-//    public ResponseEntity<?> saveCode(@RequestBody CodeRoom snippet) {
-//        codeService.save(snippet);
-//        return ResponseEntity.ok("Code saved successfully");
-//    }
+    private final ProjectMapper mapper;
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<CodeRoom> getCode(@PathVariable String id) {
-//        return ResponseEntity.ok(codeService.findById(id));
-//    }
+    @GetMapping("/getAll")
+    public List<CodeRoomDTO> getALl(){
+        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAll());
+    }
 
-    @MessageMapping("/edit")
-    @SendTo("/topic/code")
-    public CodeRoom editCode(@Payload CodeRoom snippet) {
-        codeService.save(snippet);
-        return snippet;
+    @PostMapping("/create")
+    public CodeRoomDTO createCodeRoom(@RequestBody String name){
+        CodeRoom codeRoom= new CodeRoom();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        codeRoom.setContent("");
+        codeRoom.setName(name);
+        codeRoom.setOwner(user);
+
+        return this.mapper.mapCodeRoomToDTO(this.codeService.save(codeRoom));
+    }
+
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") @NonNull String codeRoomId){
+
+        Optional<CodeRoom> codeRoom = this.codeService.findById(codeRoomId);
+
+       if (codeRoom.isEmpty()){
+           return ResponseEntity.notFound().build();
+       }
+
+        return ResponseEntity.ok(this.mapper.mapCodeRoomToDTO(codeRoom.get()));
     }
 }
