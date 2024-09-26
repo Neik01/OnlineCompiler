@@ -43,7 +43,7 @@ export class CodeRoomComponent implements OnInit{
     
     this.websocketService.isConnected.subscribe((value)=>{
       if(value == true){
-        this.websocketService.subscribe('/topic/'+"66e2983aa53d9a64a746e5be",(message)=>{
+        this.websocketService.subscribe('/topic/'+this.route.snapshot.params["id"],(message)=>{
           if(this.CMInstance){
             const msg:WebsocketMessage = JSON.parse(message._body)
 
