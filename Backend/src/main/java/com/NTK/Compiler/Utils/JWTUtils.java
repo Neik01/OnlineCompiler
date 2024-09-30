@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -27,7 +28,8 @@ public class JWTUtils {
     }
 
     public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String,Object> map = new HashMap<>();
+        return generateToken(map, userDetails);
     }
 
 
@@ -82,6 +84,7 @@ public class JWTUtils {
     }
     public boolean validateJwtToken(String authToken) {
         try {
+
             Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
             return true;
         } catch (MalformedJwtException e) {
@@ -90,10 +93,19 @@ public class JWTUtils {
             logger.error("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
 
         return false;
+    }
+    public String parseJwt(String header) {
+
+        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
+            return header.substring(7, header.length());
+        }
+
+        return null;
     }
 }

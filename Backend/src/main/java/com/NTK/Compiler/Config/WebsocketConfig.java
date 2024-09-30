@@ -3,10 +3,15 @@ package com.NTK.Compiler.Config;
 
 import com.NTK.Compiler.Entities.Role;
 import com.NTK.Compiler.Entities.User;
+import com.NTK.Compiler.Filter.UserEventInterceptor;
+import com.NTK.Compiler.Filter.WebsocketAuthInterceptor;
 import com.NTK.Compiler.Repository.UserRepository;
 import com.NTK.Compiler.Utils.JWTUtils;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,6 +22,8 @@ import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,16 +32,17 @@ import org.springframework.web.socket.config.annotation.*;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableWebSocketMessageBroker
 @Slf4j
 @RequiredArgsConstructor
-@Order(Ordered.HIGHEST_PRECEDENCE+99)
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JWTUtils jwtUtils;
 
+
+    private final JWTUtils jwtUtils;
     private final UserRepository userRepository;
 
 
@@ -59,41 +67,20 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.taskExecutor().corePoolSize(4).maxPoolSize(10).keepAliveSeconds(60).queueCapacity(100);
 
-        registration.interceptors(new ChannelInterceptor() {
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor =
-                        MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-
-                    String authHeader = accessor.getFirstNativeHeader("Authorization");
-                    String token = parseJwt(authHeader);
-
-
-                    if (token!=null && jwtUtils.validateJwtToken(token)){
-                        String username = jwtUtils.extractUsername(token);
-                        Optional<User> user = userRepository.findByUsername(username);
-                        final UsernamePasswordAuthenticationToken userSecurityToken =
-                                new UsernamePasswordAuthenticationToken(username, null, Collections.singleton(Role.User::toString));
-
-
-                        user.ifPresent(value -> accessor.setUser(userSecurityToken));
-
-                    }
-
-                }
-                return message;
-            }
-        });
+//        registration.interceptors(new WebsocketAuthInterceptor(jwtUtils,userRepository));
+//        registration.interceptors(new UserEventInterceptor());
     }
 
-    private String parseJwt(String header) {
 
-        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
-            return header.substring(7, header.length());
-        }
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        registry.setMessageSizeLimit(8192)  // default: 64 * 1024
+                .setSendBufferSizeLimit(8192)  // default: 512 * 1024
+                .setSendTimeLimit(10000);
 
-        return null;
     }
+
+
 }

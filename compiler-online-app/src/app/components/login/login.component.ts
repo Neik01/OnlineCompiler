@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit{
       localStorage.setItem("userEmail",msg.email);
       localStorage.setItem("userUsername",msg.username)
       localStorage.setItem("userId",msg.id)
-      this.websocketService.init();
+      
     });
   }
 }

@@ -15,12 +15,13 @@ export class WebsocketService {
   public isConnected = new BehaviorSubject<boolean>(false);
 
   public subscribe(destination:string,callbackFn:(message:any)=>void) {
-    console.log("subcscribe: " + destination);
-    
+   
     this.stompClient?.subscribe(destination, message => {
-      console.log('Received: ' + message.body);
+     
       // Handle the received message
       callbackFn(message);
+    },{
+       Authorization: 'Bearer '+localStorage.getItem('jwtToken')
     });
     
   }
@@ -66,7 +67,7 @@ export class WebsocketService {
     this.stompClient.connect(
       header, 
       (frame: any) => {
-      console.log('Connected: ' + frame);
+      
       this.isConnected.next(true);
 
     }, 
