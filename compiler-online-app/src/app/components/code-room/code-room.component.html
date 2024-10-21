@@ -5,11 +5,6 @@
       
       (codeMirrorLoaded)="getCMInstance($event)"
       [(ngModel)]="content"
-      [options]="{
-        lineNumbers: true,
-        theme: 'material',
-        mode: 'javascript'
-      }
-      "
+      [options]="editorOptions"
     ></ngx-codemirror>
 </div>

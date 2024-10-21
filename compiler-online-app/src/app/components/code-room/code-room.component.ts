@@ -17,6 +17,7 @@ import { WebsocketMessage } from 'src/app/Model/Message';
 import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Route } from '@angular/router';
 import { CoderoomService } from 'src/app/services/coderoom.service';
+import { UtilService } from 'src/app/services/util.service';
 
 @Component({
   selector: 'app-code-room',
@@ -27,15 +28,25 @@ export class CodeRoomComponent implements OnInit {
   content = '';
   CMInstance: CodeMirror.EditorFromTextArea = null;
   roomId = '';
-
+  editorOptions={}
   constructor(
     public websocketService: WebsocketService,
     public authService: AuthService,
     public route: ActivatedRoute,
-    public codeRoomService: CoderoomService
+    public codeRoomService: CoderoomService,
+    public utilService:UtilService
   ) {}
 
   ngOnInit(): void {
+
+    this.editorOptions={
+      lineNumbers: true,
+        theme: 'material',
+        mode: 'text/x-c++src'
+    }
+
+    this.utilService.getCMMode().subscribe(mode => this.editorOptions['mode']=mode)
+
     this.websocketService.init();
 
     this.websocketService.isConnected.subscribe(value=>{
@@ -44,21 +55,17 @@ export class CodeRoomComponent implements OnInit {
           this.roomId = data['id'];
           this.subscribeTopic(this.roomId)
           
-          this.codeRoomService.getById(data['id']).subscribe((data) => {
+          this.codeRoomService.getById(this.roomId).subscribe((data) => {
             this.content = data.content;
     
           });
+
+          this.utilService.setRouteId(this.roomId);
         });
       }
       
     })
    
-
-    // this.websocketService.isConnected.subscribe((value) => {
-    //   if (value == true) {
-    //    this.subscribeTopic()
-    //   }
-    // });
   }
 
   subscribeTopic(id:string){
@@ -67,6 +74,8 @@ export class CodeRoomComponent implements OnInit {
       '/topic/' + id,
       (message) => {
         if (this.CMInstance) {
+          console.log("Code: "+message);
+          
           const msg: WebsocketMessage = JSON.parse(message._body);
 
           const user = localStorage.getItem('userId');
@@ -98,5 +107,9 @@ export class CodeRoomComponent implements OnInit {
         });
       }
     });
+  }
+
+  setMode(mode:string){
+    this.utilService.setCMMode(mode);
   }
 }

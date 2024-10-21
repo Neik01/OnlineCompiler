@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoginResponse } from 'src/app/Model/LoginResponse';
 import { AuthService } from 'src/app/services/auth.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit{
 
   constructor(private fb:FormBuilder,
               private websocketService:WebsocketService,
-              private authService:AuthService
+              private authService:AuthService,
+              private router:Router
   ){}
 
   ngOnInit(): void {
@@ -38,6 +40,8 @@ export class LoginComponent implements OnInit{
       localStorage.setItem("userUsername",msg.username)
       localStorage.setItem("userId",msg.id)
       
+      this.authService.getLoginState();
+      this.router.navigateByUrl("/code");
     });
   }
 }

@@ -4,11 +4,11 @@
     <app-header></app-header>
     <!-- main content -->
     <div class="flex-1 flex mt-11">
-    
+        
         <app-sidebar ></app-sidebar>
     
         <div class="flex-1 h-full w-full bg-white overflow-auto z-10" [ngClass]="isSidebarOpen?'ml-64':'ml-12'">
-    
+            <app-share-modal></app-share-modal>
             <router-outlet></router-outlet>
         </div>
     </div>

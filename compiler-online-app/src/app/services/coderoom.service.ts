@@ -16,7 +16,7 @@ export class CoderoomService {
 
   addCoderoom(name:string){
 
-    const createUrl = this.codeRoomUrl+"/create"
+    const createUrl = this.codeRoomUrl
     
     return this.httpClient.post<CodeRoom>(createUrl,name);
 
@@ -24,14 +24,14 @@ export class CoderoomService {
 
   getAll(){
 
-    const getAllUrl = this.codeRoomUrl +"/getAll";
+    const getAllUrl = this.codeRoomUrl;
 
     return this.httpClient.get<CodeRoom[]>(getAllUrl);
   }
 
   getById(id:string){
 
-    const getById = this.codeRoomUrl + "/getById/"+id;
+    const getById = this.codeRoomUrl + "/"+id;
 
     return this.httpClient.get<CodeRoom>(getById);
   }

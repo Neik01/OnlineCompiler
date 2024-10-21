@@ -32,12 +32,12 @@ public class CodeRoomController {
 
     private final ProjectMapper mapper;
 
-    @GetMapping("/getAll")
+    @GetMapping()
     public List<CodeRoomDTO> getALl(){
         return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAll());
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public CodeRoomDTO createCodeRoom(@RequestBody String name){
         CodeRoom codeRoom= new CodeRoom();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -50,7 +50,7 @@ public class CodeRoomController {
     }
 
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") @NonNull String codeRoomId){
 
         Optional<CodeRoom> codeRoom = this.codeService.findById(codeRoomId);

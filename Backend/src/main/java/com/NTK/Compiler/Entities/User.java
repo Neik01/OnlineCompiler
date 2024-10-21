@@ -38,8 +38,6 @@ public class User implements UserDetails {
 
     private Role role;
 
-
-
     public User(String email, String username, String password) {
         this.email = email;
         this.username = username;

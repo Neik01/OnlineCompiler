@@ -18,3 +18,10 @@ interface ServerResponse {
   roomId: string;
   userId: string;
 }
+
+export interface SubscribeNotify{
+  Type:string;
+  User:string;
+  roomId:string;
+  userList:Object[]
+}

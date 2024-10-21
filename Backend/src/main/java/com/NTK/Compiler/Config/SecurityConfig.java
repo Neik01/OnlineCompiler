@@ -45,21 +45,7 @@ public class SecurityConfig {
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-//                .addFilterAt(((servletRequest, servletResponse, filterChain) -> {
-//
-//                    HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-//                    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-//                    System.out.println("Request to: " + httpRequest.getRequestURI());
-//                    System.out.println("Method: " + httpRequest.getMethod());
-//                    System.out.println("Headers: " + httpRequest.getHeaderNames());
-//                    System.out.println("User Principal: " + httpRequest.getUserPrincipal());
-//                    System.out.println("Authentication: " + SecurityContextHolder.getContext().getAuthentication());
-//
-//
-//                    filterChain.doFilter(servletRequest,servletResponse);
-//                }), UsernamePasswordAuthenticationFilter.class)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+
 
         ;
         return http.build();

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WebsocketService } from './services/websocket.service';
+import { AuthService } from './services/auth.service';
 
 
 @Component({
@@ -10,10 +11,10 @@ import { WebsocketService } from './services/websocket.service';
 })
 export class AppComponent implements OnInit{
   
-  constructor(public websocket:WebsocketService) {}
+  constructor(public authService:AuthService) {}
 
   ngOnInit(): void {
-    
+    this.authService.setLoginState();
   }
 
   

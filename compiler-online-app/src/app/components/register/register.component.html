@@ -1,1 +1,88 @@
-<p>register works!</p>
+<div class="flex items-center justify-center min-h-screen bg-gray-50">
+    <div class="bg-white shadow-md rounded-lg p-8 max-w-sm w-full">
+      <h2 class="text-2xl font-bold text-center mb-6">ĐĂNG KÝ</h2>
+      
+      <form  [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Username Field -->
+        <div class="mb-4">
+          <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Tên đăng nhập</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Tên đăng nhập"
+          />
+          <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="text-red-500 text-sm">
+            Tên đăng nhập phải dài ít nhất 4 ký tự
+          </div>
+        </div>
+  
+        <!-- Email Field -->
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Email"
+          />
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500 text-sm">
+            Email không hợp lệ
+          </div>
+        </div>
+  
+        <!-- Password Field -->
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Mật khẩu"
+          />
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-sm">
+            Mật khẩu phải dài ít nhất 6 ký tự
+          </div>
+        </div>
+  
+        <!-- Confirm Password Field -->
+        <div class="mb-4">
+          <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Xác nhận mật khẩu</label>
+          <input
+            type="password"
+            id="confirm-password"
+            formControlName="confirmPassword"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Xác nhận mật khẩu"
+          />
+          <div *ngIf="!passwordsMatch() && registerForm.get('confirmPassword')?.touched" class="text-red-500 text-sm">
+            Mật khẩu không khớp
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-center mb-2">
+            <p class="text-red-500 text-sm">{{this.serverError}}</p>
+        </div>
+        <!-- Submit Button -->
+        <div class="flex items-center justify-center">
+          <button
+            type="submit"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Đăng ký
+          </button>
+        </div>
+      </form>
+  
+      <!-- Login Link -->
+      <div class="text-center mt-4">
+        <p class="text-gray-600">
+          Đã có tài khoản? <a routerLink="/auth/login" class="text-pink-500 hover:underline">Đăng nhập ngay</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+  

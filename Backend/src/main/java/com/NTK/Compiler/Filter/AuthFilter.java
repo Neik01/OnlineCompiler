@@ -64,4 +64,11 @@ public class AuthFilter extends OncePerRequestFilter {
 
         return null;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        return path.equals("/api/auth/register");
+    }
 }

@@ -1,17 +1,3 @@
-<!-- <div class="w-full pt-2 flex fixed top-0 left-0 right-0 bg-white z-10 shadow-md">
-  <button
-  type="button"
-  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
->
-  Tải file
-</button>
-<button
-  type="button"
-  class="ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
->
-  Mời người khác
-</button>
-</div> -->
 
 <div class="w-full py-2 flex fixed top-0 left-0 right-0 bg-[#31343e] z-10 shadow-md">
   <!-- Page Logo -->
@@ -22,18 +8,23 @@
   </a>
   <!-- Filename -->
   <span class="text-white flex-1">
-    Sep 06 1:01 PM
+    {{this.roomName}}
   </span>
   
   
-  <button  class="border border-gray-400 hover:border-gray-200 text-white font-bold py-1 px-4 rounded-md flex items-center">
+  <button *ngIf="canShare" (click)="openShareModal()" class="border border-gray-400 hover:border-gray-200 text-white font-bold py-1 px-4 rounded-md flex items-center">
     <span class="mr-1">Chia sẻ</span>
   
   </button>
 
   <!-- User name -->
-  <button (click)="navToAuth()" class="border mx-2 border-gray-400 hover:border-gray-200 text-white font-bold py-1 px-4 rounded-md flex items-center">
+  <button *ngIf="!isLogin" (click)="navToAuth()" class="border mx-2 border-gray-400 hover:border-gray-200 text-white font-bold py-1 px-4 rounded-md flex items-center">
     <span class="mr-1">Đăng nhập</span>
+    
+  </button>
+
+  <button *ngIf="isLogin" (click)="logout()" class="border mx-2 border-gray-400 hover:border-gray-200 text-white font-bold py-1 px-4 rounded-md flex items-center">
+    <span class="mr-1">Đăng xuất</span>
     
   </button>
   <!-- <span class="text-white ml-4">kien nguyen</span> -->

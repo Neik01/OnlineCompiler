@@ -15,6 +15,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
+import { ShareModalComponent } from './components/share-modal/share-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
     AuthPageComponent,
     LoginComponent,
     RegisterComponent,
+    ShareModalComponent,
     
   ],
   imports: [

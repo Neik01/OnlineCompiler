@@ -3,8 +3,7 @@ package com.NTK.Compiler.Config;
 
 import com.NTK.Compiler.Entities.Role;
 import com.NTK.Compiler.Entities.User;
-import com.NTK.Compiler.Filter.UserEventInterceptor;
-import com.NTK.Compiler.Filter.WebsocketAuthInterceptor;
+
 import com.NTK.Compiler.Repository.UserRepository;
 import com.NTK.Compiler.Utils.JWTUtils;
 import io.jsonwebtoken.Jwt;
@@ -53,7 +52,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS()
                 ;
         registry.addEndpoint("/ws")
-//                .addInterceptors(new JwtInterceptor(this.jwtUtils,this.userDetailsService))
+
                 .setAllowedOriginPatterns("http://localhost:4200")
         ;
     }
