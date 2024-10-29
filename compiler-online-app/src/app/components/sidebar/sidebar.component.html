@@ -41,7 +41,7 @@
 
 
       <!-- settings -->
-      <div class="hover:bg-slate-700 pb-2 pt-3 pl-2 cursor-pointer border-b-2 border-b-slate-500">
+      <div *ngIf="showSettings" class="hover:bg-slate-700 pb-2 pt-3 pl-2 cursor-pointer border-b-2 border-b-slate-500">
         <button (click)="openSettings()">
           <svg
           class="size-8 "
@@ -71,8 +71,8 @@
           <div class="text-start text-xl justify-start items-start">
             <h2>File của bạn</h2>
           </div>
-          <div class="flex pt-1 flex-col" >
-      </div>
+          
+     
         <div class="flex " *ngIf="isAddNew">
           <div class="w-6 mr-1 ">
             <svg viewBox="0 0 24 24" class="size-6 "  fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,6 +107,12 @@
         </div>
 
       </div>
+
+        <div class="mt-2">
+          <div class="text-start text-xl justify-start items-start">
+            <h2>Được chia sẻ</h2>
+          </div>
+        </div>
       </div>
   
       <div *ngIf="menu=='users'">
@@ -153,10 +159,11 @@
        
         <div class="mb-4 text-start">
           <label class="block mb-2" for="theme">Theme</label>
-          <select id="theme" class="w-[90%] text-slate-600 p-2 border border-gray-300 rounded">
-            <option>material</option>
-            <option>monokai</option>
-            <option>light</option>
+          <select [(ngModel)]="selectedTheme" (change)="onThemeChange()" id="theme" class="w-[90%] text-slate-600 p-2 border border-gray-300 rounded">
+            <option *ngFor="let theme of codemirrorThemes" [ngValue]="theme.theme">
+              {{theme.name}}
+            </option>
+            
             <!-- Add more options as needed -->
           </select>
         </div>

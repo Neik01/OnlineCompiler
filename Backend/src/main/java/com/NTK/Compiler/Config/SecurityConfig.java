@@ -38,7 +38,7 @@ public class SecurityConfig {
                             .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
                 })
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**","/ws/**").permitAll()
+                        .requestMatchers("/api/auth/**","/ws/**","/api/codeExec/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session->session.

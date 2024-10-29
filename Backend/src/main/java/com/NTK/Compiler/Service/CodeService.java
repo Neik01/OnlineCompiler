@@ -1,11 +1,17 @@
 package com.NTK.Compiler.Service;
 
 import com.NTK.Compiler.Entities.CodeRoom;
+import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Repository.CodeRoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.ReflectionUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,8 +25,9 @@ public class CodeService {
 
 
     public List<CodeRoom> findAll(){
-
-        return codeRepository.findAll();
+        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        User userInfo =(User) userToken.getPrincipal();
+        return codeRepository.findByOwnerId(userInfo.getId());
     }
 
     public CodeRoom save(CodeRoom room) {
@@ -30,12 +37,10 @@ public class CodeService {
     public Optional<CodeRoom> findById(String id) {
         
         return codeRepository.findById(id);
-
-
     }
 
     public List<CodeRoom> findAllByUserId(String userId){
-        return Optional.ofNullable(codeRepository.findAllByUserId(userId))
+        return Optional.ofNullable(codeRepository.findByOwnerId(userId))
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -50,4 +55,40 @@ public class CodeService {
         }
     }
 
+    public Optional<CodeRoom> updateSettings(String language,String id){
+        Optional<CodeRoom> codeRoom = this.codeRepository.findById(id);
+
+        if(codeRoom.isPresent()){
+
+            CodeRoom updateCR = codeRoom.get();
+
+
+            codeRoom.get().setLanguage(language);
+            this.codeRepository.save(codeRoom.get());
+        }
+
+        return  codeRoom;
+    }
+
+
+    public Optional<CodeRoom> updateFields(Map<String,Object> updateMap, String id){
+        Optional<CodeRoom> codeRoom = this.codeRepository.findById(id);
+
+        if(codeRoom.isPresent()){
+
+            CodeRoom updateCR = codeRoom.get();
+
+            updateMap.forEach((key,value)->{
+                Field field = ReflectionUtils.findField(CodeRoom.class,field1 -> field1.getName().equals(key));
+                if (field != null) {
+                    field.setAccessible(true);
+                    ReflectionUtils.setField(field, updateCR, value);
+                }
+            });
+
+            this.codeRepository.save(codeRoom.get());
+        }
+
+        return  codeRoom;
+    }
 }

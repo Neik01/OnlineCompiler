@@ -24,14 +24,14 @@ export class HeaderComponent implements OnInit{
               private utilService:UtilService,
               private crService:CoderoomService,
               private authService:AuthService,
-              private route:ActivatedRoute
+              
   ) {}
 
   ngOnInit(): void {
-    this.utilService.getRouteId().subscribe(value=>{
+    this.crService.getRouteId().subscribe(value=>{
       if(value!=''){
-        this.crService.getById(value).subscribe(data=>{
-          console.log(data);
+        this.crService.currentCodeRoom$.subscribe(data=>{
+          
           this.canShare = true
           this.roomName= data.name;
       })
@@ -58,5 +58,6 @@ export class HeaderComponent implements OnInit{
     this.authService.logout();
     this.router.navigateByUrl("/auth/login")
   }
+
 
 }

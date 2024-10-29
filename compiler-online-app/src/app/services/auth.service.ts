@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginResponse } from '../Model/LoginResponse';
 import { BehaviorSubject } from 'rxjs';
+import { User } from '../Model/EntityResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ export class AuthService {
  
   server = "http://localhost:8080/api/auth"
   isLogin = new BehaviorSubject<boolean>(false);
+  redirectUrl:string = null;
+  user = new BehaviorSubject<User>(null);
   constructor(private httpClient:HttpClient) { }
 
   login(username:string,password:string){

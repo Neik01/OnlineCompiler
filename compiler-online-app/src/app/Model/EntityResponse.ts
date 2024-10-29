@@ -4,7 +4,11 @@ export interface CodeRoom {
     name:string;
     content: string | null;
     owner: User;
+    language: string;
+    canModify:boolean
 }
+
+
 
 export interface User{
   id:string;

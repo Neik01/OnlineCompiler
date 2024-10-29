@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface CodeRoomRepository extends MongoRepository<CodeRoom,String> {
 
-    @Query("{ 'users.$id' : ?0 }")
-    List<CodeRoom> findAllByUserId(String userId);
+    @Query("{ 'owner.id': ?0 }")
+    List<CodeRoom> findByOwnerId(String userId);
 }

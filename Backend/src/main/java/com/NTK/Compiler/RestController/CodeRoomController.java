@@ -2,8 +2,8 @@ package com.NTK.Compiler.RestController;
 
 import com.NTK.Compiler.DTO.CodeRoomDTO;
 import com.NTK.Compiler.Entities.User;
-import com.NTK.Compiler.Payload.Request.CodeChangePayload;
 import com.NTK.Compiler.Entities.CodeRoom;
+import com.NTK.Compiler.Payload.Request.CodeRoomRequest;
 import com.NTK.Compiler.Service.CodeService;
 import com.NTK.Compiler.Utils.ProjectMapper;
 import lombok.NonNull;
@@ -11,20 +11,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Code;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/code")
 public class CodeRoomController {
 
@@ -44,7 +40,9 @@ public class CodeRoomController {
 
         codeRoom.setContent("");
         codeRoom.setName(name);
+        codeRoom.setLanguage("plain-text");
         codeRoom.setOwner(user);
+        codeRoom.setCanEdit(true);
 
         return this.mapper.mapCodeRoomToDTO(this.codeService.save(codeRoom));
     }
@@ -60,5 +58,32 @@ public class CodeRoomController {
        }
 
         return ResponseEntity.ok(this.mapper.mapCodeRoomToDTO(codeRoom.get()));
+    }
+
+    @PutMapping("/updateLanguage")
+    public ResponseEntity<?> updateLanguage(@RequestBody CodeRoomRequest request){
+
+        Optional<CodeRoom> codeRoom = this.codeService.updateSettings(request.getLanguage(), request.getId());
+
+
+        if (codeRoom.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        log.info(codeRoom.toString());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateLanguage2(@RequestBody Map<String,Object> updateMap,@PathVariable String id){
+
+        Optional<CodeRoom> codeRoom = this.codeService.updateFields(updateMap, id);
+
+
+        if (codeRoom.isEmpty())
+            return ResponseEntity.notFound().build();
+
+
+        log.info(codeRoom.toString());
+        return ResponseEntity.ok().build();
     }
 }

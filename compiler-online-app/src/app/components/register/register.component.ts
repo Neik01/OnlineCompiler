@@ -27,7 +27,7 @@ export class RegisterComponent {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      console.log('Form Submitted', this.registerForm.value);
+      
       this.authService.register(this.registerForm.value).subscribe(
       {
         next:(res:string) =>{

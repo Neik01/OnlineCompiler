@@ -1,0 +1,24 @@
+<div class="text-white">
+    <div class="ml-2 mt-2">
+        Input:
+    </div>
+    <div class="m-2 ">
+        <textarea 
+        #inputTa
+        [(ngModel)]="stdin"
+        (change)="inputChange()"
+        (click)="placeCursorAtStart(inputTa)"
+        class="p-2 w-full bg-slate-900 text-slate-200 text-base resize-none h-36">
+
+        </textarea>
+    </div>
+
+    <div class="ml-2 mt-2">
+        Output:
+    </div>
+    <div class="m-2 ">
+        <textarea [(ngModel)]="stdout" class="p-2 w-full bg-slate-900 text-slate-200 text-base resize-none h-56">
+            
+        </textarea>
+    </div>
+</div>

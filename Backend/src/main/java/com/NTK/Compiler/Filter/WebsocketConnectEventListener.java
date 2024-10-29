@@ -111,5 +111,13 @@ public class WebsocketConnectEventListener {
                 this.sessionMap.remove(roomId);
             }
         }
+        HashMap<String,Object> payload = new HashMap<>();
+
+        payload.put("Type", "UNSUBSCRIBE");
+        payload.put("User", username);
+        payload.put("roomId", roomId);
+        payload.put("userList", this.sessionMap.get(roomId));
+
+        this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
     }
 }

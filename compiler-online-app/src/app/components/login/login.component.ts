@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { User } from 'src/app/Model/EntityResponse';
 import { LoginResponse } from 'src/app/Model/LoginResponse';
 import { AuthService } from 'src/app/services/auth.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
@@ -36,12 +37,13 @@ export class LoginComponent implements OnInit{
     this.authService.login(userEmail,userPassword).subscribe((msg:LoginResponse) =>{
       
       localStorage.setItem("jwtToken",msg.token);
-      localStorage.setItem("userEmail",msg.email);
-      localStorage.setItem("userUsername",msg.username)
-      localStorage.setItem("userId",msg.id)
       
-      this.authService.getLoginState();
-      this.router.navigateByUrl("/code");
+      const user:User = {id:msg.id,email:msg.email,username:msg.username}
+      this.authService.user.next(user);
+      this.authService.setLoginState();
+      const redirectUrl = this.authService.redirectUrl||"/code"
+      this.authService.redirectUrl = null
+      this.router.navigateByUrl(redirectUrl);
     });
   }
 }

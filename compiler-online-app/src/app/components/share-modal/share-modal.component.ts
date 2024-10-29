@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CoderoomService } from 'src/app/services/coderoom.service';
 import { UtilService } from 'src/app/services/util.service';
 
 @Component({
@@ -10,15 +11,18 @@ export class ShareModalComponent implements OnInit{
 
   isModalOpen = false;
   shareLink = window.location.href; 
-  canModify = true;
 
-  constructor(private utilService:UtilService){}
+
+  constructor(private utilService:UtilService
+  ){}
   ngOnInit(): void {
+
     this.utilService.getModalState().subscribe(value=>{
       this.shareLink=window.location.href;
       this.isModalOpen=value
+    })
 
-  })
+  
   }
 
   close(){
@@ -34,4 +38,6 @@ export class ShareModalComponent implements OnInit{
   showModal(){
     this.utilService.setModalState(true)
   }
+
+  
 }

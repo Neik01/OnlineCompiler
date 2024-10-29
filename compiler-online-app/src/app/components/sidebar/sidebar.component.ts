@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { codeMirrorLanguages } from 'src/app/Constant/constant';
+import { codeMirrorLanguages, codeMirrorThemes } from 'src/app/Constant/constant';
 import { CodeRoom } from 'src/app/Model/EntityResponse';
 import { SubscribeNotify } from 'src/app/Model/Message';
+import { AuthService } from 'src/app/services/auth.service';
 import { CoderoomService } from 'src/app/services/coderoom.service';
 import { UtilService } from 'src/app/services/util.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
@@ -12,7 +13,7 @@ import { WebsocketService } from 'src/app/services/websocket.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit{
+export class SidebarComponent implements OnInit,AfterViewInit{
   isOpen;
   isAddNew = false;
   data:CodeRoom[] =[];
@@ -23,31 +24,44 @@ export class SidebarComponent implements OnInit{
   users =[];
   username = ""
   codemirrorModes = codeMirrorLanguages;
+  codemirrorThemes = codeMirrorThemes;
   selectedMimeType =""
+  selectedTheme =""
+  showSettings = false;
 
   constructor(public utilService:UtilService,
     public codeRoomService:CoderoomService,
     public websocketService:WebsocketService,
-    public router:Router
+    public router:Router,
+    public authService:AuthService
   ){
     
+  }
+  ngAfterViewInit(): void {
+    this.codeRoomService.getRouteId().subscribe(value=>{
+      if(value!=""){
+        this.websocketService.subscribe("/topic/"+value+"/users",res=>{
+          const mes:SubscribeNotify = JSON.parse(res.body);
+        
+          this.users= mes.userList;
+          this.showSettings = true;
+        })
+      }
+      else{
+        this.showSettings = false;
+      }
+    })
   }
 
   ngOnInit(): void {
       this.utilService.getSidebarStatus().subscribe(value => this.isOpen=value);
       this.codeRoomService.getAll().subscribe(data=>this.data=data);
-      this.username = localStorage.getItem('userUsername');
+      const localTheme = localStorage.getItem('theme')
+      this.codeRoomService.getCMTheme().subscribe(theme => this.selectedTheme = theme || localTheme || 'dracula');
+      this.codeRoomService.getCMMode().subscribe(mode => this.selectedMimeType = mode);
+      this.username = this.authService.user.getValue().username;
 
-      this.utilService.getRouteId().subscribe(value=>{
-        if(value!=""){
-          this.websocketService.subscribe("/topic/"+value+"/users",res=>{
-            const mes:SubscribeNotify = JSON.parse(res.body);
-            console.log(mes);
-            this.users= mes.userList;
-            
-          })
-        }
-      })
+     
   }
 
 
@@ -110,6 +124,13 @@ export class SidebarComponent implements OnInit{
 
   onLanguageChange(){
     console.log(this.selectedMimeType);
-    this.utilService.setCMMode(this.selectedMimeType);
+    this.codeRoomService.setCMMode(this.selectedMimeType);
+
+    this.codeRoomService.updateField('language',this.selectedMimeType).subscribe(value => console.log(value));
+  }
+
+  onThemeChange(){
+    
+    this.codeRoomService.setCMTheme(this.selectedTheme);
   }
 }

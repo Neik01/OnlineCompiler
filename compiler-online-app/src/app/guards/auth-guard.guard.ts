@@ -3,15 +3,15 @@ import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
 import { map } from 'rxjs';
 
-export const authGuardGuard: CanActivateChildFn = (route, state) => {
+export const authGuardGuard: CanActivateFn = (route, state) => {
   
   const authServicer = inject(AuthService);
   const router = inject(Router);
 
-
+  authServicer.redirectUrl = state.url;
   const token = localStorage.getItem('jwtToken');
     if(!token){
-      
+      router.navigate(["/auth/login"]);
       return false;
     }
     const payload = JSON.parse(atob(token.split('.')[1]));

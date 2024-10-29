@@ -6,10 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { EditorView, basicSetup } from '@codemirror/basic-setup';
-import { EditorState } from '@codemirror/state';
-import { javascript } from '@codemirror/lang-javascript';
-import { dracula } from '@uiw/codemirror-theme-dracula';
+
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import * as CodeMirror from 'codemirror';
@@ -18,6 +15,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Route } from '@angular/router';
 import { CoderoomService } from 'src/app/services/coderoom.service';
 import { UtilService } from 'src/app/services/util.service';
+import { ExecuteCodeService } from 'src/app/services/execute-code.service';
+import { codeMirrorLanguages } from 'src/app/Constant/constant';
 
 @Component({
   selector: 'app-code-room',
@@ -29,23 +28,29 @@ export class CodeRoomComponent implements OnInit {
   CMInstance: CodeMirror.EditorFromTextArea = null;
   roomId = '';
   editorOptions={}
+  readonly = false;
+
   constructor(
     public websocketService: WebsocketService,
     public authService: AuthService,
     public route: ActivatedRoute,
     public codeRoomService: CoderoomService,
-    public utilService:UtilService
+    public utilService:UtilService,
+    public codeExecService:ExecuteCodeService
   ) {}
 
   ngOnInit(): void {
-
+    const theme = localStorage.getItem('theme') || 'dracula';
     this.editorOptions={
-      lineNumbers: true,
-        theme: 'material',
-        mode: 'text/x-c++src'
+        lineNumbers: true,
+        theme: theme,
+        mode: "text/x-c++src",
+        readOnly: false
     }
 
-    this.utilService.getCMMode().subscribe(mode => this.editorOptions['mode']=mode)
+    this.codeRoomService.getCMMode().subscribe(mode => this.editorOptions['mode']=mode);
+    
+    this.codeRoomService.getCMTheme().subscribe(theme => theme ==''?'dracula':this.editorOptions['theme']=theme);
 
     this.websocketService.init();
 
@@ -55,18 +60,20 @@ export class CodeRoomComponent implements OnInit {
           this.roomId = data['id'];
           this.subscribeTopic(this.roomId)
           
-          this.codeRoomService.getById(this.roomId).subscribe((data) => {
-            this.content = data.content;
-    
-          });
+          this.codeRoomService.getById(this.roomId);
 
-          this.utilService.setRouteId(this.roomId);
+          this.codeRoomService.setRouteId(this.roomId);
         });
       }
       
     })
    
-  }
+    this.codeRoomService.currentCodeRoom$.subscribe(coderoom=>{
+      this.codeRoomService.setCMMode(coderoom.language);
+      this.content = coderoom.content;
+     
+    })
+  } 
 
   subscribeTopic(id:string){
     
@@ -109,7 +116,15 @@ export class CodeRoomComponent implements OnInit {
     });
   }
 
-  setMode(mode:string){
-    this.utilService.setCMMode(mode);
+  executeCode(){
+
+    const source_code = this.CMInstance.getValue();
+   
+
+    const mode = this.editorOptions['mode'];
+    const language = codeMirrorLanguages.find(lang =>lang.mime === mode)
+    
+    this.codeExecService.executeCode(source_code,language.id);
   }
+
 }

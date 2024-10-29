@@ -7,13 +7,12 @@ import { CodeRoomComponent } from './components/code-room/code-room.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { flush } from '@angular/core/testing';
 import { authGuardGuard } from './guards/auth-guard.guard';
 
 const routes: Routes = [
 
-  {path:"",redirectTo:"code",pathMatch:"full"},
-  {path:"code",component:HomePageComponent,canActivateChild:[authGuardGuard] ,children:[
+ 
+  {path:"code",component:HomePageComponent,canActivate:[authGuardGuard] ,children:[
 
     {path:"",component:EmptyRoomComponent},
     {path:":id",component:CodeRoomComponent}
@@ -23,7 +22,7 @@ const routes: Routes = [
     {path:"register",component:RegisterComponent}
   ]},
   
-  
+  {path:"",redirectTo:"code",pathMatch:"full"},
   {path:"**",redirectTo:"code"}
 
 ];
