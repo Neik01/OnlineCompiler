@@ -13,7 +13,7 @@ import { WebsocketService } from 'src/app/services/websocket.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit,AfterViewInit{
+export class SidebarComponent implements OnInit{
   isOpen;
   isAddNew = false;
   data:CodeRoom[] =[];
@@ -28,7 +28,7 @@ export class SidebarComponent implements OnInit,AfterViewInit{
   selectedMimeType =""
   selectedTheme =""
   showSettings = false;
-
+  sharedFiles=[];
   constructor(public utilService:UtilService,
     public codeRoomService:CoderoomService,
     public websocketService:WebsocketService,
@@ -37,31 +37,33 @@ export class SidebarComponent implements OnInit,AfterViewInit{
   ){
     
   }
-  ngAfterViewInit(): void {
-    this.codeRoomService.getRouteId().subscribe(value=>{
-      if(value!=""){
-        this.websocketService.subscribe("/topic/"+value+"/users",res=>{
-          const mes:SubscribeNotify = JSON.parse(res.body);
-        
-          this.users= mes.userList;
-          this.showSettings = true;
-        })
-      }
-      else{
-        this.showSettings = false;
-      }
-    })
-  }
+ 
 
   ngOnInit(): void {
       this.utilService.getSidebarStatus().subscribe(value => this.isOpen=value);
       this.codeRoomService.getAll().subscribe(data=>this.data=data);
+      
       const localTheme = localStorage.getItem('theme')
       this.codeRoomService.getCMTheme().subscribe(theme => this.selectedTheme = theme || localTheme || 'dracula');
       this.codeRoomService.getCMMode().subscribe(mode => this.selectedMimeType = mode);
-      this.username = this.authService.user.getValue().username;
-
-     
+      this.codeRoomService.getAllSharedFiles().subscribe(files => this.sharedFiles = files);
+      this.authService.user.subscribe(user => {
+        this.username = user.username
+      });
+      
+      this.codeRoomService.getRouteId().subscribe(value=>{
+        if(value!=""){
+          this.websocketService.subscribe("/topic/"+value+"/users",res=>{
+            const mes:SubscribeNotify = JSON.parse(res.body);
+          
+            this.users= mes.userList;
+            this.showSettings = true;
+          })
+        }
+        else{
+          this.showSettings = false;
+        }
+      })
   }
 
 

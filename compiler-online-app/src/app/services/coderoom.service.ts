@@ -92,4 +92,7 @@ export class CoderoomService {
     return this.currentCodeRoom.value;
   }
 
+  public getAllSharedFiles(){
+    return this.httpClient.get<CodeRoom[]>(this.codeRoomUrl+"/getAllShared");
+  }
 }

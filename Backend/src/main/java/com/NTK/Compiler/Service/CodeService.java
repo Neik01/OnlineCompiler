@@ -3,6 +3,7 @@ package com.NTK.Compiler.Service;
 import com.NTK.Compiler.Entities.CodeRoom;
 import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Repository.CodeRoomRepository;
+import com.NTK.Compiler.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ public class CodeService {
 
 
     private final CodeRoomRepository codeRepository;
+    private final UserRepository userRepository;
 
 
     public List<CodeRoom> findAll(){
@@ -90,5 +92,26 @@ public class CodeService {
         }
 
         return  codeRoom;
+    }
+
+
+    public void addUserToCR(CodeRoom cr,User user){
+
+        if (cr.getUsers() != null ) {
+            if( cr.getUsers().contains(user)||cr.getOwner().getId().equals(user.getId()))
+                return;
+        }
+
+        cr.addUser(user);
+
+        this.codeRepository.save(cr);
+    }
+
+
+    public List<CodeRoom> getAllCodeRoomShared(String userId){
+        return  Optional.ofNullable(codeRepository.findByUserInCodeRooms(userId))
+                .stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 }

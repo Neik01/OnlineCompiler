@@ -10,8 +10,10 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -37,6 +39,30 @@ public class CodeRoom {
 
     private String language;
 
-    private boolean canEdit;
 
+    public void addUser(User user){
+        if (this.users == null){
+            this.users = new ArrayList<>();
+        }
+
+        users.add(user);
+    }
+
+    public void removeUser(User user){
+
+        this.users.remove(user);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CodeRoom codeRoom = (CodeRoom) obj;
+        return Objects.equals(id, codeRoom.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

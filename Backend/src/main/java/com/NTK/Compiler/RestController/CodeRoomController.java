@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Code;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class CodeRoomController {
 
     @GetMapping()
     public List<CodeRoomDTO> getALl(){
-        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAll());
+        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(this.extractedUser().getId()));
     }
 
     @PostMapping()
@@ -42,7 +43,7 @@ public class CodeRoomController {
         codeRoom.setName(name);
         codeRoom.setLanguage("plain-text");
         codeRoom.setOwner(user);
-        codeRoom.setCanEdit(true);
+
 
         return this.mapper.mapCodeRoomToDTO(this.codeService.save(codeRoom));
     }
@@ -57,7 +58,8 @@ public class CodeRoomController {
            return ResponseEntity.notFound().build();
        }
 
-        return ResponseEntity.ok(this.mapper.mapCodeRoomToDTO(codeRoom.get()));
+       this.codeService.addUserToCR(codeRoom.get(),this.extractedUser());
+       return ResponseEntity.ok(this.mapper.mapCodeRoomToDTO(codeRoom.get()));
     }
 
     @PutMapping("/updateLanguage")
@@ -86,4 +88,20 @@ public class CodeRoomController {
         log.info(codeRoom.toString());
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/getAllShared")
+    public List<CodeRoomDTO> getAllSharedCR(){
+        List<CodeRoom> list = this.codeService.getAllCodeRoomShared(extractedUser().getId());
+
+        return this.mapper.mapListCodeRoomToListDTO(list);
+    }
+
+    private User extractedUser() {
+        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        User userInfo =(User) userToken.getPrincipal();
+        return  userInfo;
+    }
+
+
 }
