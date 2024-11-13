@@ -40,11 +40,6 @@ import java.util.concurrent.Executors;
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 
-
-    private final JWTUtils jwtUtils;
-    private final UserRepository userRepository;
-
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
@@ -68,8 +63,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.taskExecutor().corePoolSize(4).maxPoolSize(10).keepAliveSeconds(60).queueCapacity(100);
 
-//        registration.interceptors(new WebsocketAuthInterceptor(jwtUtils,userRepository));
-//        registration.interceptors(new UserEventInterceptor());
+
     }
 
 

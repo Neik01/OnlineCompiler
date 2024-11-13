@@ -18,11 +18,11 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(()->new UsernameNotFoundException("User not found"));
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        return username -> userRepository.findByUsername(username)
+//                .orElseThrow(()->new UsernameNotFoundException("User not found"));
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -36,8 +36,8 @@ public class ApplicationConfig {
     }
 
 
-    @Bean
-    public AuthFilter authFilter(){
-        return new AuthFilter();
-    }
+//    @Bean
+//    public AuthFilter authFilter(){
+//        return new AuthFilter();
+//    }
 }

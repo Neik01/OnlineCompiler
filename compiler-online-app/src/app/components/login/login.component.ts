@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit{
 
 
   loginForm:FormGroup;
+  googleUrl = ""
 
   constructor(private fb:FormBuilder,
               private websocketService:WebsocketService,
@@ -27,6 +28,8 @@ export class LoginComponent implements OnInit{
       email:[''],
       password:['']
     })
+
+    this.authService.getGoogleLoginUrl().subscribe((data:any) => this.googleUrl = data.authUrl) 
   }
 
   onSubmit(){
@@ -46,4 +49,6 @@ export class LoginComponent implements OnInit{
       this.router.navigateByUrl(redirectUrl);
     });
   }
+
+ 
 }

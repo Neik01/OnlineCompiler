@@ -2,37 +2,18 @@ import { CanActivateChildFn, CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
 import { map } from 'rxjs';
+import { KeycloakService } from '../services/keycloak.service';
 
 export const authGuardGuard: CanActivateFn = (route, state) => {
   
-  const authServicer = inject(AuthService);
+  const keycloakService = inject(KeycloakService);
   const router = inject(Router);
-
-  authServicer.redirectUrl = state.url;
-  const token = localStorage.getItem('jwtToken');
-    if(!token){
-      router.navigate(["/auth/login"]);
-      return false;
-    }
-    const payload = JSON.parse(atob(token.split('.')[1]));
-
-    const currentTime = Math.floor(Date.now() / 1000); // In seconds
-    const tokenExpirationTime = payload.exp;
-
-    if(tokenExpirationTime > currentTime){
-      console.log(true);
-      authServicer.setLoginState();
-      return true;
-    }
-    else
-      {
-        console.log(false);
-        authServicer.setLoginState();
-        router.navigate(["/auth/login"]);
-        return false
-      }
- 
+  
+  if(keycloakService.keycloak?.isTokenExpired()){
+    router.navigate(['auth/login']);
+    return false;
+  }
    
-  // Use the getLoginState() method which returns an Observable<boolean>
 
+  return true;
 };

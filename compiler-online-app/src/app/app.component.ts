@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChi
 import { Subscription } from 'rxjs';
 import { WebsocketService } from './services/websocket.service';
 import { AuthService } from './services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -11,10 +12,11 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent implements OnInit{
   
-  constructor(public authService:AuthService) {}
+  constructor(public authService:AuthService,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.authService.setLoginState();
+    
   }
 
   

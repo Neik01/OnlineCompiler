@@ -95,10 +95,10 @@ public class CodeService {
     }
 
 
-    public void addUserToCR(CodeRoom cr,User user){
+    public void addUserToCR(CodeRoom cr,String user){
 
         if (cr.getUsers() != null ) {
-            if( cr.getUsers().contains(user)||cr.getOwner().getId().equals(user.getId()))
+            if( cr.getUsers().contains(user)||cr.getOwner().equals(user))
                 return;
         }
 

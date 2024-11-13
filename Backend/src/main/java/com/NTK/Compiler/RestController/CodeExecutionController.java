@@ -17,7 +17,6 @@ public class CodeExecutionController {
 
     private final CodeExecService codeExecutionService;
 
-
     @PostMapping("/execute")
     public Mono<Judge0Response> executeCode(@RequestBody SubmitCodeRequest request) {
 

@@ -98,11 +98,6 @@
 			<version>0.11.5</version>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version> <!-- Latest version -->
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -112,16 +107,17 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.apache.httpcomponents</groupId>-->
-<!--			<artifactId>httpcore</artifactId>-->
-<!--			<version>4.4.16</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.httpcomponents</groupId>-->
-<!--			<artifactId>httpclient</artifactId>-->
-<!--			<version>4.5.14</version>-->
-<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
