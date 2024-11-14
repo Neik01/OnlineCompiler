@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
 public class WebsocketController {
 
 
@@ -30,9 +28,7 @@ public class WebsocketController {
     @MessageMapping("/code-message")
     public void codeChange(CodeChangePayload payload){
 
-        for(SimpUser simpUser: simpUserRegistry.getUsers()){
-            log.info("user: "+simpUser);
-        }
+
         this.codeService.updateContent(payload.getContent(),payload.getRoomId());
         messagingTemplate.convertAndSend("/topic/"+payload.getRoomId(), payload);
 

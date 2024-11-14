@@ -15,7 +15,7 @@ export class AppComponent implements OnInit{
   constructor(public authService:AuthService,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.authService.setLoginState();
+    // this.authService.setLoginState();
     
   }
 

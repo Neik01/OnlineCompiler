@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { CoderoomService } from 'src/app/services/coderoom.service';
+import { KeycloakService } from 'src/app/services/keycloak.service';
 import { UtilService } from 'src/app/services/util.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
 
@@ -23,7 +24,8 @@ export class HeaderComponent implements OnInit{
               private router:Router,
               private utilService:UtilService,
               private crService:CoderoomService,
-              private authService:AuthService,
+              // private authService:AuthService,
+              private kcService:KeycloakService
               
   ) {}
 
@@ -41,7 +43,7 @@ export class HeaderComponent implements OnInit{
       }
     })
     
-    this.authService.getLoginState().subscribe(value => this.isLogin = value)
+    // this.authService.getLoginState().subscribe(value => this.isLogin = value)
   }
 
  navToAuth(){
@@ -54,8 +56,9 @@ export class HeaderComponent implements OnInit{
     this.utilService.setModalState(true);
   }
 
-  logout(){
-    this.authService.logout();
+  async logout(){
+    // this.authService.logout();
+    await this.kcService.logout();
     this.router.navigateByUrl("/auth/login")
   }
 

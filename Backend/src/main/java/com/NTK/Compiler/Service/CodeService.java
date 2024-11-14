@@ -3,7 +3,7 @@ package com.NTK.Compiler.Service;
 import com.NTK.Compiler.Entities.CodeRoom;
 import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Repository.CodeRoomRepository;
-import com.NTK.Compiler.Repository.UserRepository;
+//import com.NTK.Compiler.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +23,13 @@ public class CodeService {
 
 
     private final CodeRoomRepository codeRepository;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
 
     public List<CodeRoom> findAll(){
         UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         User userInfo =(User) userToken.getPrincipal();
-        return codeRepository.findByOwnerId(userInfo.getId());
+        return codeRepository.findByOwner(userInfo.getId());
     }
 
     public CodeRoom save(CodeRoom room) {
@@ -42,7 +42,7 @@ public class CodeService {
     }
 
     public List<CodeRoom> findAllByUserId(String userId){
-        return Optional.ofNullable(codeRepository.findByOwnerId(userId))
+        return Optional.ofNullable(codeRepository.findByOwner(userId))
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -109,7 +109,7 @@ public class CodeService {
 
 
     public List<CodeRoom> getAllCodeRoomShared(String userId){
-        return  Optional.ofNullable(codeRepository.findByUserInCodeRooms(userId))
+        return  Optional.ofNullable(codeRepository.findByUsersContaining(userId))
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());

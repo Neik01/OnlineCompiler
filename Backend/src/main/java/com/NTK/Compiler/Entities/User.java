@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,10 +18,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+//@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "user")
+@Getter
+@Setter
+//@Document(collection = "user")
 public class User implements UserDetails {
 
     @Id

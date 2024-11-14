@@ -17,7 +17,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { ShareModalComponent } from './components/share-modal/share-modal.component';
 import { OutputComponent } from './components/output/output.component';
-import { OauthCallbackComponent } from './components/oauth-callback/oauth-callback.component';
+// import { OauthCallbackComponent } from './components/oauth-callback/oauth-callback.component';
 import { KeycloakService } from './services/keycloak.service';
 
 
@@ -39,7 +39,7 @@ export function kcFactory(kcService:KeycloakService){
     RegisterComponent,
     ShareModalComponent,
     OutputComponent,
-    OauthCallbackComponent,
+    
     
   ],
   imports: [

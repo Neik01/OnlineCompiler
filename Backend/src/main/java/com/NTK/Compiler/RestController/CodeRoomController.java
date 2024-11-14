@@ -31,8 +31,9 @@ public class CodeRoomController {
     private final ProjectMapper mapper;
 
     @GetMapping()
-    public List<CodeRoomDTO> getALl(){
-        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(this.extractedUser().getId()));
+    public List<CodeRoomDTO> getALl(Authentication user){
+        log.info(user.getPrincipal().toString());
+        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(user.getName()));
     }
 
     @PostMapping()
@@ -91,16 +92,12 @@ public class CodeRoomController {
 
     @GetMapping("/getAllShared")
     public List<CodeRoomDTO> getAllSharedCR(Authentication user){
-        List<CodeRoom> list = this.codeService.getAllCodeRoomShared(((User)user.getPrincipal()).getId());
+        List<CodeRoom> list = this.codeService.getAllCodeRoomShared((user.getName()));
 
         return this.mapper.mapListCodeRoomToListDTO(list);
     }
 
-    private User extractedUser() {
-        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        User userInfo =(User) userToken.getPrincipal();
-        return  userInfo;
-    }
+
 
 
 }

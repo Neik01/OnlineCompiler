@@ -19,7 +19,7 @@ export class KeycloakService {
       })
     }
 
-    return this._keycloak
+    return this._keycloak;
   }
 
   get profile(){
@@ -33,7 +33,7 @@ export class KeycloakService {
       onLoad:"login-required"
     })
     
-
+   
     if(authenticate){
       this._profile = (await this.keycloak?.loadUserProfile()) as UserInfo;
       this._profile.token = this.keycloak?.token;
@@ -41,10 +41,10 @@ export class KeycloakService {
   }
 
   login(){
-    return this._keycloak.login();
+    return this.keycloak.login();
   }
 
   logout(){
-    return this._keycloak.logout({redirectUri:"http://localhost:4200"});
+    return this.keycloak.logout({redirectUri:"http://localhost:4200"});
   }
 }

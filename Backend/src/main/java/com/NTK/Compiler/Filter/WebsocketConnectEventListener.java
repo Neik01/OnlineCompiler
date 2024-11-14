@@ -2,7 +2,6 @@ package com.NTK.Compiler.Filter;
 
 import com.NTK.Compiler.Entities.Role;
 import com.NTK.Compiler.Entities.User;
-import com.NTK.Compiler.Repository.UserRepository;
 import com.NTK.Compiler.Utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -29,8 +29,8 @@ public class WebsocketConnectEventListener {
     @Autowired
     private JWTUtils jwtUtils;
 
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+//    private UserRepository userRepository;
 
     @Autowired
     private SimpUserRegistry simpUserRegistry;
@@ -44,49 +44,45 @@ public class WebsocketConnectEventListener {
     public void onConnect(SessionConnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String authHeader = accessor.getFirstNativeHeader("Authorization");
-        String token = jwtUtils.parseJwt(authHeader);
 
-        if (token!=null && jwtUtils.validateJwtToken(token)){
-            String username = jwtUtils.extractUsername(token);
-            Optional<User> user = this.userRepository.findByUsername(username);
-            final UsernamePasswordAuthenticationToken userSecurityToken =
-                    new UsernamePasswordAuthenticationToken(username, null, Collections.singleton(Role.User::toString));
-
-            SecurityContextHolder.getContext().setAuthentication(userSecurityToken);
-            user.ifPresent(value -> accessor.setUser(userSecurityToken));
-
+        log.info( SecurityContextHolder.getContext().toString());
+        log.info(accessor.toString());
+        log.info("Accessor:");
+        Map<String,Object> accMap = accessor.toMap();
+        for (String key : accMap.keySet()) {
+            log.info(key+":"+accMap.get(key).toString());
         }
+
 
     }
 
     @EventListener
     public void onSubscribe(SessionSubscribeEvent event){
-
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        String authHeader = accessor.getFirstNativeHeader("Authorization");
-        String token = jwtUtils.parseJwt(authHeader);
-
-        if (token!=null && jwtUtils.validateJwtToken(token)){
-            String username = jwtUtils.extractUsername(token);
-
-            String roomId=accessor.getDestination().split("/topic/")[1];
-            if (roomId.contains("/users")){
-                roomId= roomId.replace("/users", "");
-            }
-
-            this.sessionMap.computeIfAbsent(roomId, k -> new HashSet<>()).add(username);
-            HashMap<String,Object> payload = new HashMap<>();
-
-            payload.put("Type", "SUBSCRIBE");
-            payload.put("User", username);
-            payload.put("roomId", roomId);
-            payload.put("userList", this.sessionMap.get(roomId));
-
-            this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
-
-        }
+//
+//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        String authHeader = accessor.getFirstNativeHeader("Authorization");
+//        String token = jwtUtils.parseJwt(authHeader);
+//
+//        if (token!=null && jwtUtils.validateJwtToken(token)){
+//            String username = jwtUtils.extractUsername(token);
+//
+//            String roomId=accessor.getDestination().split("/topic/")[1];
+//            if (roomId.contains("/users")){
+//                roomId= roomId.replace("/users", "");
+//            }
+//
+//            this.sessionMap.computeIfAbsent(roomId, k -> new HashSet<>()).add(username);
+//            HashMap<String,Object> payload = new HashMap<>();
+//
+//            payload.put("Type", "SUBSCRIBE");
+//            payload.put("User", username);
+//            payload.put("roomId", roomId);
+//            payload.put("userList", this.sessionMap.get(roomId));
+//
+//            this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
+//
+//        }
     }
 
     @EventListener

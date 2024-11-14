@@ -20,8 +20,4 @@ public class WebclientConfig {
                 .build();
     }
 
-    @Bean
-    public WebClient oauthUserInfoClient() {
-        return WebClient.builder().baseUrl(introspectUri).build();
-    }
 }

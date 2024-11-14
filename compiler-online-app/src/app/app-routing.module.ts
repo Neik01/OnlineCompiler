@@ -8,13 +8,11 @@ import { AuthPageComponent } from './pages/auth-page/auth-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { authGuardGuard } from './guards/auth-guard.guard';
-import { OauthCallbackComponent } from './components/oauth-callback/oauth-callback.component';
+// import { OauthCallbackComponent } from './components/oauth-callback/oauth-callback.component';
 
 const routes: Routes = [
 
-  {
-    path:"oauth2/google/callback",component:OauthCallbackComponent
-  },
+
   {path:"code",component:HomePageComponent,canActivate:[authGuardGuard] ,children:[
 
     {path:"",component:EmptyRoomComponent},

@@ -32,7 +32,7 @@ export class CodeRoomComponent implements OnInit {
 
   constructor(
     public websocketService: WebsocketService,
-    public authService: AuthService,
+    // public authService: AuthService,
     public route: ActivatedRoute,
     public codeRoomService: CoderoomService,
     public utilService:UtilService,
