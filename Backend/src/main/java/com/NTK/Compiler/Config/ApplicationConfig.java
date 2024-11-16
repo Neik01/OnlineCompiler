@@ -18,18 +18,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 
-import static org.springframework.messaging.simp.SimpMessageType.MESSAGE;
-import static org.springframework.messaging.simp.SimpMessageType.SUBSCRIBE;
+import static org.springframework.messaging.simp.SimpMessageType.*;
 
 @Configuration
 @EnableWebSocketSecurity
-@Order(Ordered.HIGHEST_PRECEDENCE+50)
 public class ApplicationConfig {
 
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
-
+                .simpTypeMatchers(CONNECT,SUBSCRIBE).permitAll()
                 .anyMessage().authenticated();
 
 

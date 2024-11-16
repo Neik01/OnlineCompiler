@@ -25,7 +25,7 @@ export class WebsocketService {
       // Handle the received message
       callbackFn(message);
     },{
-       Authorization: 'Bearer '+localStorage.getItem('jwtToken')
+       Authorization: 'Bearer '+this.kc.profile.token
     });
     
   }
@@ -81,12 +81,12 @@ export class WebsocketService {
         return new SockJS('http://localhost:8080/ws');
       };
     }
+    
 
-
-    this.client.onConnect = function(frame:any) {
-      
-      this.isConnected.next(true);
+    this.client.onConnect = (frame:any) =>{
+      this.isConnected.next(true)
       this.reconnectAttempts = 0;
+    
     };
 
     this.client.onWebSocketClose = () => {
@@ -102,7 +102,7 @@ export class WebsocketService {
       }
     };
 
-   this.client.onStompError=function (frame) {
+   this.client.onStompError= (frame)=> {
     // Will be invoked in case of error encountered at Broker
     // Bad login/passcode typically will cause an error
     // Complaint brokers will set `message` header with a brief message. Body may contain details.

@@ -5,6 +5,7 @@ import com.NTK.Compiler.Entities.Role;
 import com.NTK.Compiler.Entities.User;
 
 //import com.NTK.Compiler.Repository.UserRepository;
+import com.NTK.Compiler.Filter.WebsocketChannelInterceptor;
 import com.NTK.Compiler.Utils.JWTUtils;
 import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
@@ -52,11 +53,13 @@ import java.util.concurrent.Executors;
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 @Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE+99)
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final ApplicationContext context;
 
-    private final AuthenticationManager authenticationManager;
+    private final WebsocketChannelInterceptor channelInterceptor;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
@@ -74,9 +77,12 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
        registry.setUserDestinationPrefix("/user");
     }
 
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+       registration.interceptors(channelInterceptor);
 
 
-
+    }
 
 
 }

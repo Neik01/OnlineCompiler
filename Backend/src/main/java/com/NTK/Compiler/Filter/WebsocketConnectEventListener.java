@@ -1,21 +1,15 @@
 package com.NTK.Compiler.Filter;
 
-import com.NTK.Compiler.Entities.Role;
-import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
@@ -36,34 +30,55 @@ public class WebsocketConnectEventListener {
     private SimpUserRegistry simpUserRegistry;
 
     @Autowired
+    private JwtDecoder decoder;
+
+    @Autowired
     private  SimpMessagingTemplate messagingTemplate;
 
     private Map<String,Set<String>> sessionMap = new ConcurrentHashMap<>();
 
-    @EventListener
-    public void onConnect(SessionConnectEvent event) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-
-
-        log.info( SecurityContextHolder.getContext().toString());
-        log.info(accessor.toString());
-        log.info("Accessor:");
-        Map<String,Object> accMap = accessor.toMap();
-        for (String key : accMap.keySet()) {
-            log.info(key+":"+accMap.get(key).toString());
-        }
-
-
-    }
 
     @EventListener
     public void onSubscribe(SessionSubscribeEvent event){
+
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        String authHeader = accessor.getFirstNativeHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+
+        log.info(token);
+        try{
+
+            String roomId=accessor.getDestination().split("/topic/")[1];
+            if (roomId.contains("/users")){
+                roomId = roomId.replace("/users", "");
+            }
+           Jwt jwt = decoder.decode(token);
+           String userId = jwt.getSubject();
+           String username = jwt.getClaimAsString("preferred_username");
+           this.sessionMap.computeIfAbsent(roomId, m->new HashSet<>()).add(username);
+
+
+
+           log.info(username);
+
+            HashMap<String,Object> payload = new HashMap<>();
 //
-//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-//
-//        String authHeader = accessor.getFirstNativeHeader("Authorization");
-//        String token = jwtUtils.parseJwt(authHeader);
-//
+            payload.put("Type", "SUBSCRIBE");
+            payload.put("User", username);
+            payload.put("roomId", roomId);
+            payload.put("userList", this.sessionMap.get(roomId));
+
+            this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
+
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("Invalid Jwt token: "+e);
+        }
 //        if (token!=null && jwtUtils.validateJwtToken(token)){
 //            String username = jwtUtils.extractUsername(token);
 //

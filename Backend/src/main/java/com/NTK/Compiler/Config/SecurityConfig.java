@@ -46,6 +46,7 @@ public class SecurityConfig {
                     httpSecurityHeadersConfigurer
                             .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
                 })
+
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**","/ws/**","/api/codeExec/**").permitAll()
                         .anyRequest().authenticated()
