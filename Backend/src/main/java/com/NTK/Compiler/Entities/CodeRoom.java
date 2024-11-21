@@ -29,18 +29,16 @@ public class CodeRoom {
     private String content;
 
     private String name;
-    @DBRef
-    private User owner;
 
 
-    @DBRef(lazy = true)
-    @JsonIgnoreProperties("codeRooms")
-    private List<User> users;
+    private String owner;
+
+    private List<String> users;
 
     private String language;
 
 
-    public void addUser(User user){
+    public void addUser(String user){
         if (this.users == null){
             this.users = new ArrayList<>();
         }
@@ -48,10 +46,6 @@ public class CodeRoom {
         users.add(user);
     }
 
-    public void removeUser(User user){
-
-        this.users.remove(user);
-    }
 
     @Override
     public boolean equals(Object obj) {

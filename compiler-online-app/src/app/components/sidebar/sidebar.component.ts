@@ -5,6 +5,7 @@ import { CodeRoom } from 'src/app/Model/EntityResponse';
 import { SubscribeNotify } from 'src/app/Model/Message';
 import { AuthService } from 'src/app/services/auth.service';
 import { CoderoomService } from 'src/app/services/coderoom.service';
+import { KeycloakService } from 'src/app/services/keycloak.service';
 import { UtilService } from 'src/app/services/util.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
 
@@ -33,7 +34,8 @@ export class SidebarComponent implements OnInit{
     public codeRoomService:CoderoomService,
     public websocketService:WebsocketService,
     public router:Router,
-    public authService:AuthService
+    // public authService:AuthService,
+    public kcService:KeycloakService
   ){
     
   }
@@ -47,10 +49,9 @@ export class SidebarComponent implements OnInit{
       this.codeRoomService.getCMTheme().subscribe(theme => this.selectedTheme = theme || localTheme || 'dracula');
       this.codeRoomService.getCMMode().subscribe(mode => this.selectedMimeType = mode);
       this.codeRoomService.getAllSharedFiles().subscribe(files => this.sharedFiles = files);
-      this.authService.user.subscribe(user => {
-        this.username = user.username
-      });
-      
+
+      this.username = this.kcService.profile.username;
+
       this.codeRoomService.getRouteId().subscribe(value=>{
         if(value!=""){
           this.websocketService.subscribe("/topic/"+value+"/users",res=>{

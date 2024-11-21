@@ -5,3 +5,12 @@ export interface LoginResponse{
     id:string
     email:string
 }
+
+export interface UserInfo{
+
+    username?:string
+    email?:string
+    firstname?:string
+    lastname?:string
+    token?:string
+}

@@ -1,7 +1,6 @@
 package com.NTK.Compiler.RestController;
 
 import com.NTK.Compiler.DTO.CodeRoomDTO;
-import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Entities.CodeRoom;
 import com.NTK.Compiler.Payload.Request.CodeRoomRequest;
 import com.NTK.Compiler.Service.CodeService;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Code;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,19 +30,19 @@ public class CodeRoomController {
     private final ProjectMapper mapper;
 
     @GetMapping()
-    public List<CodeRoomDTO> getALl(){
-        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(this.extractedUser().getId()));
+    public List<CodeRoomDTO> getALl(Authentication user){
+
+        return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(user.getName()));
     }
 
     @PostMapping()
-    public CodeRoomDTO createCodeRoom(@RequestBody String name){
+    public CodeRoomDTO createCodeRoom(@RequestBody String name,Authentication user){
         CodeRoom codeRoom= new CodeRoom();
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         codeRoom.setContent("");
         codeRoom.setName(name);
         codeRoom.setLanguage("plain-text");
-        codeRoom.setOwner(user);
+        codeRoom.setOwner(user.getName());
 
 
         return this.mapper.mapCodeRoomToDTO(this.codeService.save(codeRoom));
@@ -50,15 +50,16 @@ public class CodeRoomController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") @NonNull String codeRoomId){
+    public ResponseEntity<?> getById(@PathVariable("id") @NonNull String codeRoomId,Authentication user){
 
         Optional<CodeRoom> codeRoom = this.codeService.findById(codeRoomId);
+
 
        if (codeRoom.isEmpty()){
            return ResponseEntity.notFound().build();
        }
 
-       this.codeService.addUserToCR(codeRoom.get(),this.extractedUser());
+       this.codeService.addUserToCR(codeRoom.get(),user.getName());
        return ResponseEntity.ok(this.mapper.mapCodeRoomToDTO(codeRoom.get()));
     }
 
@@ -84,24 +85,18 @@ public class CodeRoomController {
         if (codeRoom.isEmpty())
             return ResponseEntity.notFound().build();
 
-
-        log.info(codeRoom.toString());
         return ResponseEntity.ok().build();
     }
 
 
     @GetMapping("/getAllShared")
-    public List<CodeRoomDTO> getAllSharedCR(){
-        List<CodeRoom> list = this.codeService.getAllCodeRoomShared(extractedUser().getId());
+    public List<CodeRoomDTO> getAllSharedCR(Authentication user){
+        List<CodeRoom> list = this.codeService.getAllCodeRoomShared((user.getName()));
 
         return this.mapper.mapListCodeRoomToListDTO(list);
     }
 
-    private User extractedUser() {
-        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        User userInfo =(User) userToken.getPrincipal();
-        return  userInfo;
-    }
+
 
 
 }

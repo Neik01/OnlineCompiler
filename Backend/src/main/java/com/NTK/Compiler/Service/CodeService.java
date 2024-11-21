@@ -1,12 +1,12 @@
 package com.NTK.Compiler.Service;
 
 import com.NTK.Compiler.Entities.CodeRoom;
-import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Repository.CodeRoomRepository;
-import com.NTK.Compiler.Repository.UserRepository;
+//import com.NTK.Compiler.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +23,9 @@ public class CodeService {
 
 
     private final CodeRoomRepository codeRepository;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
 
-    public List<CodeRoom> findAll(){
-        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        User userInfo =(User) userToken.getPrincipal();
-        return codeRepository.findByOwnerId(userInfo.getId());
-    }
 
     public CodeRoom save(CodeRoom room) {
         return codeRepository.save(room);
@@ -42,7 +37,7 @@ public class CodeService {
     }
 
     public List<CodeRoom> findAllByUserId(String userId){
-        return Optional.ofNullable(codeRepository.findByOwnerId(userId))
+        return Optional.ofNullable(codeRepository.findByOwner(userId))
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -61,9 +56,6 @@ public class CodeService {
         Optional<CodeRoom> codeRoom = this.codeRepository.findById(id);
 
         if(codeRoom.isPresent()){
-
-            CodeRoom updateCR = codeRoom.get();
-
 
             codeRoom.get().setLanguage(language);
             this.codeRepository.save(codeRoom.get());
@@ -95,10 +87,10 @@ public class CodeService {
     }
 
 
-    public void addUserToCR(CodeRoom cr,User user){
+    public void addUserToCR(CodeRoom cr,String user){
 
         if (cr.getUsers() != null ) {
-            if( cr.getUsers().contains(user)||cr.getOwner().getId().equals(user.getId()))
+            if( cr.getUsers().contains(user)||cr.getOwner().equals(user))
                 return;
         }
 
@@ -109,7 +101,7 @@ public class CodeService {
 
 
     public List<CodeRoom> getAllCodeRoomShared(String userId){
-        return  Optional.ofNullable(codeRepository.findByUserInCodeRooms(userId))
+        return  Optional.ofNullable(codeRepository.findByUsersContaining(userId))
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());

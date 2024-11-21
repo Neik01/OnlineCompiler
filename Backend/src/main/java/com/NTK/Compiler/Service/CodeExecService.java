@@ -7,6 +7,7 @@ import com.NTK.Compiler.Payload.Response.SubmitCodeResponse;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,7 +22,8 @@ import java.util.Map;
 @Slf4j
 public class CodeExecService {
 
-    private final WebClient webClient;
+    @Qualifier("judge0Client")
+    private final WebClient judge0Client;
 
     @Value("${rapidapi.url}")
     private String rapidApiUrl;
@@ -29,7 +31,7 @@ public class CodeExecService {
     public Mono<String> submitCode(SubmitCodeRequest request) {
 
 
-        return webClient.post()
+        return judge0Client.post()
                 .uri(rapidApiUrl + "/submissions?base64_encoded=true")
                 .bodyValue(request)
                 .retrieve()
@@ -40,7 +42,7 @@ public class CodeExecService {
     }
 
    public Mono<Judge0Response> getCodeExecResult(String token){
-       return webClient.get()
+       return judge0Client.get()
                .uri("/submissions/{token}?base64_encoded=true", token)
                .retrieve()
                .bodyToMono(Judge0Response.class)

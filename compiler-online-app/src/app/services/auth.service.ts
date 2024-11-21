@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { LoginResponse } from '../Model/LoginResponse';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { User } from '../Model/EntityResponse';
+import { Token } from '../Model/Token';
+
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +47,6 @@ export class AuthService {
 
  
     this.isLogin.next(tokenExpirationTime > currentTime)
-  
-    console.log(this.isLogin.getValue());
     
   }
 
@@ -54,5 +54,29 @@ export class AuthService {
 
     localStorage.removeItem('jwtToken');
     this.isLogin.next(false);
+  }
+
+  loginWithGoogle(){
+
+  }
+
+  getGoogleLoginUrl(){
+
+    return this.httpClient.get("http://localhost:8080/oauth2/google/url");
+  }
+
+  getGoogleToken(code: string): Observable<boolean> {
+    return this.httpClient.get<Token>("http://localhost:8080/oauth2/google/callback?code=" + code, {observe: "response"})
+      .pipe(map((response: HttpResponse<Token>) => {
+        console.log("Got token "+ response.body.token);
+        
+        if (response.status === 200 && response.body !== null) {
+          
+          localStorage.setItem("jwtToken",response.body.token)
+          return true;
+        } else {
+          return false;
+        }
+      }));
   }
 }
