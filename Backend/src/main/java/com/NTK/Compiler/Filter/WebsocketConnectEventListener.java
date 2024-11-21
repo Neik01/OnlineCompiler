@@ -1,6 +1,5 @@
 package com.NTK.Compiler.Filter;
 
-import com.NTK.Compiler.Utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,13 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class WebsocketConnectEventListener {
 
-    @Autowired
-    private JWTUtils jwtUtils;
-
-//    @Autowired
-//    private UserRepository userRepository;
-
-    @Autowired
+   @Autowired
     private SimpUserRegistry simpUserRegistry;
 
     @Autowired
@@ -102,33 +95,33 @@ public class WebsocketConnectEventListener {
 
     @EventListener
     public void onUnsubscribe(SessionUnsubscribeEvent event){
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-        String roomId=accessor.getDestination().split("/topic/")[1];
-        if (roomId.contains("/users")){
-            roomId= roomId.replace("/users", "");
-        }
-
-
-        String authHeader = accessor.getFirstNativeHeader("Authorization");
-        String token = jwtUtils.parseJwt(authHeader);
-
-        String username = jwtUtils.extractUsername(token);
-
-        Set<String> users =this.sessionMap.get(roomId);
-
-        if (users!=null){
-            users.remove(username);
-            if (users.isEmpty()){
-                this.sessionMap.remove(roomId);
-            }
-        }
-        HashMap<String,Object> payload = new HashMap<>();
-
-        payload.put("Type", "UNSUBSCRIBE");
-        payload.put("User", username);
-        payload.put("roomId", roomId);
-        payload.put("userList", this.sessionMap.get(roomId));
-
-        this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
+//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+//        String roomId=accessor.getDestination().split("/topic/")[1];
+//        if (roomId.contains("/users")){
+//            roomId= roomId.replace("/users", "");
+//        }
+//
+//
+//        String authHeader = accessor.getFirstNativeHeader("Authorization");
+//        String token = jwtUtils.parseJwt(authHeader);
+//
+//        String username = jwtUtils.extractUsername(token);
+//
+//        Set<String> users =this.sessionMap.get(roomId);
+//
+//        if (users!=null){
+//            users.remove(username);
+//            if (users.isEmpty()){
+//                this.sessionMap.remove(roomId);
+//            }
+//        }
+//        HashMap<String,Object> payload = new HashMap<>();
+//
+//        payload.put("Type", "UNSUBSCRIBE");
+//        payload.put("User", username);
+//        payload.put("roomId", roomId);
+//        payload.put("userList", this.sessionMap.get(roomId));
+//
+//        this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
     }
 }

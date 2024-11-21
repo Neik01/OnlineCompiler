@@ -49,10 +49,7 @@ export class SidebarComponent implements OnInit{
       this.codeRoomService.getCMTheme().subscribe(theme => this.selectedTheme = theme || localTheme || 'dracula');
       this.codeRoomService.getCMMode().subscribe(mode => this.selectedMimeType = mode);
       this.codeRoomService.getAllSharedFiles().subscribe(files => this.sharedFiles = files);
-      // this.authService.user.subscribe(user => {
-      //   this.username = user.username
-      // });
-      
+
       this.username = this.kcService.profile.username;
 
       this.codeRoomService.getRouteId().subscribe(value=>{

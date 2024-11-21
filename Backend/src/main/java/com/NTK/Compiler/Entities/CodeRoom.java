@@ -46,10 +46,6 @@ public class CodeRoom {
         users.add(user);
     }
 
-    public void removeUser(User user){
-
-        this.users.remove(user);
-    }
 
     @Override
     public boolean equals(Object obj) {

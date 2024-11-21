@@ -1,12 +1,12 @@
 package com.NTK.Compiler.Service;
 
 import com.NTK.Compiler.Entities.CodeRoom;
-import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Repository.CodeRoomRepository;
 //import com.NTK.Compiler.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +26,6 @@ public class CodeService {
 //    private final UserRepository userRepository;
 
 
-    public List<CodeRoom> findAll(){
-        UsernamePasswordAuthenticationToken userToken =(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        User userInfo =(User) userToken.getPrincipal();
-        return codeRepository.findByOwner(userInfo.getId());
-    }
 
     public CodeRoom save(CodeRoom room) {
         return codeRepository.save(room);
@@ -61,9 +56,6 @@ public class CodeService {
         Optional<CodeRoom> codeRoom = this.codeRepository.findById(id);
 
         if(codeRoom.isPresent()){
-
-            CodeRoom updateCR = codeRoom.get();
-
 
             codeRoom.get().setLanguage(language);
             this.codeRepository.save(codeRoom.get());

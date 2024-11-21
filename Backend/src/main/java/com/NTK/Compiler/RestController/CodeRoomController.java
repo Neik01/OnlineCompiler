@@ -1,7 +1,6 @@
 package com.NTK.Compiler.RestController;
 
 import com.NTK.Compiler.DTO.CodeRoomDTO;
-import com.NTK.Compiler.Entities.User;
 import com.NTK.Compiler.Entities.CodeRoom;
 import com.NTK.Compiler.Payload.Request.CodeRoomRequest;
 import com.NTK.Compiler.Service.CodeService;
@@ -32,7 +31,7 @@ public class CodeRoomController {
 
     @GetMapping()
     public List<CodeRoomDTO> getALl(Authentication user){
-        log.info(user.getPrincipal().toString());
+
         return this.mapper.mapListCodeRoomToListDTO(this.codeService.findAllByUserId(user.getName()));
     }
 

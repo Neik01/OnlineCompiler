@@ -19,6 +19,7 @@ import { ShareModalComponent } from './components/share-modal/share-modal.compon
 import { OutputComponent } from './components/output/output.component';
 // import { OauthCallbackComponent } from './components/oauth-callback/oauth-callback.component';
 import { KeycloakService } from './services/keycloak.service';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 
 
@@ -39,6 +40,7 @@ export function kcFactory(kcService:KeycloakService){
     RegisterComponent,
     ShareModalComponent,
     OutputComponent,
+    NotFoundComponent,
     
     
   ],

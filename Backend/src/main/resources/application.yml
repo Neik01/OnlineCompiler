@@ -2,15 +2,12 @@ spring:
   security:
     oauth2:
       resourceserver:
-<<<<<<< HEAD
-=======
         opaque-token:
             introspection-uri: https://www.googleapis.com/
-            clientId: CLIENT_ID
-            clientSecret: CLIENT_SECRET
->>>>>>> 6d36d4719344c877c5f220ce544b428a3626b3fd
+            clientId: 56849159229-2urdn30t06me6inc5r216qvk9jb29gsv.apps.googleusercontent.com
+            clientSecret: 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
         jwt:
-          issuer-uri: http://localhost:8081/realms/YOUR_REALM
+          issuer-uri: http://localhost:8081/realms/codeshare
           jwk-set-uri:  ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 

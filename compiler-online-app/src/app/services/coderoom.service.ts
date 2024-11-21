@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SERVER_URL } from '../Constant/constant';
 import { CodeRoom } from '../Model/EntityResponse';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class CoderoomService {
   private codemirrorTheme = new BehaviorSubject<string>("");
   private currentCodeRoom = new BehaviorSubject<CodeRoom>(null);
 
-  constructor(public httpClient:HttpClient) { }
+  constructor(public httpClient:HttpClient, public router:Router) { }
 
 
   addCoderoom(name:string){
@@ -37,7 +38,21 @@ export class CoderoomService {
 
     const getById = this.codeRoomUrl + "/"+id;
 
-    this.httpClient.get<CodeRoom>(getById).subscribe(coderoom => this.currentCodeRoom.next(coderoom));
+    this.httpClient.get<CodeRoom>(getById).pipe(
+      catchError(error => {
+        if (error.status === 404) {
+          console.error('CodeRoom not found:', error.message);
+          this.router.navigate(['/not-found']); // Navigate to the 404 page
+        } else {
+          console.error('An error occurred:', error.message);
+        }
+        return of(null);
+      })
+    ).subscribe(coderoom => {
+      if (coderoom) {
+        this.currentCodeRoom.next(coderoom);
+      }
+    });
   }
 
   public getRouteId(){
