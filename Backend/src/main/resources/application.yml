@@ -4,8 +4,8 @@ spring:
       resourceserver:
         opaque-token:
             introspection-uri: https://www.googleapis.com/
-            clientId: 56849159229-2urdn30t06me6inc5r216qvk9jb29gsv.apps.googleusercontent.com
-            clientSecret: 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
+            clientId: client_id
+            clientSecret: client_secret
         jwt:
           issuer-uri: http://localhost:8081/realms/codeshare
           jwk-set-uri:  ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
