@@ -12,6 +12,7 @@ export class OutputComponent implements OnInit{
   stderr = ""
 
   stdout =""
+  isLoading = false;
   constructor(public codeExecService:ExecuteCodeService){}
 
   ngOnInit(): void {

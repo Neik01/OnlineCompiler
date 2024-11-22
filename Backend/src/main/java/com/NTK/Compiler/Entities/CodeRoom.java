@@ -1,18 +1,12 @@
 package com.NTK.Compiler.Entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -43,6 +37,9 @@ public class CodeRoom {
             this.users = new ArrayList<>();
         }
 
+        if(this.users.contains(user)||this.owner.equals(user)){
+            return;
+        }
         users.add(user);
     }
 
