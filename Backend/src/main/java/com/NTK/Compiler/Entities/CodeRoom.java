@@ -43,9 +43,6 @@ public class CodeRoom {
             this.users = new ArrayList<>();
         }
 
-        if (this.users.contains(user)||this.owner.equals(user)){
-            return;
-        }
         users.add(user);
     }
 

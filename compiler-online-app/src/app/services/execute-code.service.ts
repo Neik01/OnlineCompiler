@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SERVER_URL } from '../Constant/constant';
-import { BehaviorSubject, catchError, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { CodeExecResponse } from '../Model/CodeExecResponse';
 
 @Injectable({
@@ -11,38 +11,24 @@ export class ExecuteCodeService {
 
   execCodeUrl = SERVER_URL+"/codeExec"
   private output:BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private _isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   stdin:string ="";
 
   constructor(private httpClient:HttpClient,
   ) { }
 
   executeCode(source_code:string,lang_id:number){
-    const payload = {
+    const payload = { 
       source_code: btoa(source_code),
       language_id: lang_id,
       stdin: btoa(this.stdin)
     }
+    console.log(payload);
+    
+    this.httpClient.post<CodeExecResponse>(this.execCodeUrl+"/execute",payload).subscribe(response =>{
 
-    this._isLoading.next(true);
-    this.httpClient.post<CodeExecResponse>(this.execCodeUrl+"/execute",payload)
-    .pipe(
-      catchError(error => {
-        this._isLoading.next(false);
-        let errorMessage = 'An error occurred. Please try again later.';
-        if (error.status === 404) {
-          errorMessage = 'Resource not found. Please check the URL.';
-        } else if (error.status === 500) {
-          errorMessage = 'Internal server error. Please try again later.';
-        }
-        this.output.next(errorMessage);
-        // Return an empty observable or default value if needed
-        return of(null);
-      })
-    )
-    .subscribe(response =>{
-
-      this._isLoading.next(false);
+      console.log(response);
+      
       if(response.stdout!=null){
         this.output.next(atob(response.stdout))
       }
@@ -59,9 +45,5 @@ export class ExecuteCodeService {
 
   public getOutput(){
     return this.output.asObservable();
-  }
-
-  get isLoading(){
-    return this._isLoading.asObservable();
   }
 }

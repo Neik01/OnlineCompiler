@@ -89,14 +89,11 @@ public class CodeService {
 
     public void addUserToCR(CodeRoom cr,String user){
 
-<<<<<<< Updated upstream
         if (cr.getUsers() != null ) {
             if( cr.getUsers().contains(user)||cr.getOwner().equals(user))
                 return;
         }
 
-=======
->>>>>>> Stashed changes
         cr.addUser(user);
 
         this.codeRepository.save(cr);
