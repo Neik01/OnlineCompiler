@@ -12,13 +12,17 @@ export class OutputComponent implements OnInit{
   stderr = ""
 
   stdout =""
+  isLoading: boolean = false;
+
   constructor(public codeExecService:ExecuteCodeService){}
 
   ngOnInit(): void {
       this.codeExecService.getOutput().subscribe(output => this.stdout = output);
+
+      this.codeExecService.isLoading.subscribe(loading => this.isLoading = loading)
   }
-  
-  
+
+
   placeCursorAtStart(textarea: HTMLTextAreaElement) {
     if (this.firstClick) {
       textarea.setSelectionRange(0, 0); // Set cursor to the start
@@ -29,5 +33,5 @@ export class OutputComponent implements OnInit{
   inputChange(){
     this.codeExecService.stdin = this.stdin;
   }
-  
+
 }
