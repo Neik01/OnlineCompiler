@@ -30,6 +30,7 @@ export class KeycloakService {
     return this._profile;
   }
 
+
   constructor() { }
 
   async init(){
@@ -40,10 +41,10 @@ export class KeycloakService {
     if (authenticate) {
       this._profile = (await this.keycloak?.loadUserProfile()) as UserInfo;
       this._profile.token = this.keycloak?.token;
-      this._isLoggedIn.next(true); // User is logged in
-    } else {
-      this._isLoggedIn.next(false); // User is not logged in
+      this._isLoggedIn.next(true);
     }
+    else
+      this._isLoggedIn.next(false)
   }
 
   login(){

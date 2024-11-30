@@ -52,12 +52,13 @@ export class SidebarComponent implements OnInit{
       this.username = this.kcService.profile.username;
 
       this.codeRoomService.getRouteId().subscribe(value=>{
+        this.showSettings = true;
         if(value!=""){
           this.websocketService.subscribe("/topic/"+value+"/users",res=>{
             const mes:SubscribeNotify = JSON.parse(res.body);
           
             this.users= mes.userList;
-            this.showSettings = true;
+            
           })
         }
         else{

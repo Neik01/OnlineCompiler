@@ -11,7 +11,7 @@ export class ExecuteCodeService {
 
   execCodeUrl = environment+"/codeExec"
   private output:BehaviorSubject<string> = new BehaviorSubject<string>("");
-
+  private _isLoading:BehaviorSubject<boolean> = new BehaviorSubject(false);
   stdin:string ="";
 
   constructor(private httpClient:HttpClient,
@@ -25,7 +25,22 @@ export class ExecuteCodeService {
     }
     console.log(payload);
     
-    this.httpClient.post<CodeExecResponse>(this.execCodeUrl+"/execute",payload).subscribe(response =>{
+    this.httpClient.post<CodeExecResponse>(this.execCodeUrl+"/execute",payload)
+    .pipe(
+      catchError(error => {
+        this._isLoading.next(false);
+        let errorMessage = 'An error occurred. Please try again later.';
+        if (error.status === 404) {
+          errorMessage = 'Resource not found. Please check the URL.';
+        } else if (error.status === 500) {
+          errorMessage = 'Internal server error. Please try again later.';
+        }
+        this.output.next(errorMessage);
+        // Return an empty observable or default value if needed
+        return of(null);
+      })
+    )
+    .subscribe(response =>{
 
       console.log(response);
       
@@ -45,5 +60,9 @@ export class ExecuteCodeService {
 
   public getOutput(){
     return this.output.asObservable();
+  }
+
+  get isLoading(){
+    return this._isLoading.asObservable();
   }
 }

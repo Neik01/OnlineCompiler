@@ -1,12 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component,OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CoderoomService } from 'src/app/services/coderoom.service';
 import { KeycloakService } from 'src/app/services/keycloak.service';
 import { UtilService } from 'src/app/services/util.service';
-import { WebsocketService } from 'src/app/services/websocket.service';
+
 
 
 @Component({
@@ -24,13 +21,13 @@ export class HeaderComponent implements OnInit{
               private router:Router,
               private utilService:UtilService,
               private crService:CoderoomService,
-              // private authService:AuthService,
               private kcService:KeycloakService
               
   ) {}
 
   ngOnInit(): void {
     this.crService.getRouteId().subscribe(value=>{
+
       if(value!=''){
         this.crService.currentCodeRoom$.subscribe(data=>{
           
@@ -43,7 +40,7 @@ export class HeaderComponent implements OnInit{
       }
     })
     
-    this.kcService.isLoggedIn.subscribe(value => this.isLogin = value);
+    this.kcService.isLoggedIn.subscribe(loggedIn => this.isLogin = loggedIn);
   }
 
  navToAuth(){
