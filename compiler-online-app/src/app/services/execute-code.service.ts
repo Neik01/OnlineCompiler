@@ -1,15 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SERVER_URL } from '../Constant/constant';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, of } from 'rxjs';
 import { CodeExecResponse } from '../Model/CodeExecResponse';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExecuteCodeService {
 
-  execCodeUrl = SERVER_URL+"/codeExec"
+  execCodeUrl = environment+"/codeExec"
   private output:BehaviorSubject<string> = new BehaviorSubject<string>("");
 
   stdin:string ="";

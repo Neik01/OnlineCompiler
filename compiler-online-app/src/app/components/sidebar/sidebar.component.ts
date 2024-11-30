@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { codeMirrorLanguages, codeMirrorThemes } from 'src/app/Constant/constant';
 import { CodeRoom } from 'src/app/Model/EntityResponse';
 import { SubscribeNotify } from 'src/app/Model/Message';
-import { AuthService } from 'src/app/services/auth.service';
 import { CoderoomService } from 'src/app/services/coderoom.service';
 import { KeycloakService } from 'src/app/services/keycloak.service';
 import { UtilService } from 'src/app/services/util.service';

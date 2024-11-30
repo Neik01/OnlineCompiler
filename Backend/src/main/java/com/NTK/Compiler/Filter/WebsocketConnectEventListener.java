@@ -72,56 +72,50 @@ public class WebsocketConnectEventListener {
         catch (Exception e){
             throw new IllegalArgumentException("Invalid Jwt token: "+e);
         }
-//        if (token!=null && jwtUtils.validateJwtToken(token)){
-//            String username = jwtUtils.extractUsername(token);
-//
-//            String roomId=accessor.getDestination().split("/topic/")[1];
-//            if (roomId.contains("/users")){
-//                roomId= roomId.replace("/users", "");
-//            }
-//
-//            this.sessionMap.computeIfAbsent(roomId, k -> new HashSet<>()).add(username);
-//            HashMap<String,Object> payload = new HashMap<>();
-//
-//            payload.put("Type", "SUBSCRIBE");
-//            payload.put("User", username);
-//            payload.put("roomId", roomId);
-//            payload.put("userList", this.sessionMap.get(roomId));
-//
-//            this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
-//
-//        }
+
     }
 
     @EventListener
     public void onUnsubscribe(SessionUnsubscribeEvent event){
-//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-//        String roomId=accessor.getDestination().split("/topic/")[1];
-//        if (roomId.contains("/users")){
-//            roomId= roomId.replace("/users", "");
-//        }
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+
+
+        String authHeader = accessor.getFirstNativeHeader("Authorization");
+        try{
+
+            String roomId=accessor.getDestination().split("/topic/")[1];
+            if (roomId.contains("/users")){
+                roomId= roomId.replace("/users", "");
+            }
+            String token = authHeader.substring(7);
+
+            Jwt jwt = decoder.decode(token);
+
+            String username = jwt.getClaimAsString("preferred_username");
+
+            Set<String> users =this.sessionMap.get(roomId);
 //
-//
-//        String authHeader = accessor.getFirstNativeHeader("Authorization");
-//        String token = jwtUtils.parseJwt(authHeader);
-//
-//        String username = jwtUtils.extractUsername(token);
-//
-//        Set<String> users =this.sessionMap.get(roomId);
-//
-//        if (users!=null){
-//            users.remove(username);
-//            if (users.isEmpty()){
-//                this.sessionMap.remove(roomId);
-//            }
-//        }
-//        HashMap<String,Object> payload = new HashMap<>();
-//
-//        payload.put("Type", "UNSUBSCRIBE");
-//        payload.put("User", username);
-//        payload.put("roomId", roomId);
-//        payload.put("userList", this.sessionMap.get(roomId));
-//
-//        this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
+            if (users!=null){
+                users.remove(username);
+                if (users.isEmpty()){
+                    this.sessionMap.remove(roomId);
+                }
+            }
+
+
+            HashMap<String,Object> payload = new HashMap<>();
+
+            payload.put("Type", "UNSUBSCRIBE");
+            payload.put("User", username);
+            payload.put("roomId", roomId);
+            payload.put("userList", this.sessionMap.get(roomId));
+
+
+            this.messagingTemplate.convertAndSend("/topic/" +roomId+"/users",payload);
+
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("Invalid Jwt token: "+e);
+        }
     }
 }

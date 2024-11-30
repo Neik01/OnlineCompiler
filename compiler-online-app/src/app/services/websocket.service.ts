@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import { KeycloakService } from './keycloak.service';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -15,7 +16,7 @@ export class WebsocketService {
   private maxReconnectAttempts = 5; 
   public isConnected = new BehaviorSubject<boolean>(false);
   private client: Stomp.Client;
-
+  private server = environment.SERVER_URL;
   constructor(public kc:KeycloakService) { }
 
   public subscribe(destination:string,callbackFn:(message:any)=>void) {
@@ -78,7 +79,7 @@ export class WebsocketService {
       // to be used for each (re)connect
       this.client.webSocketFactory = function () {
         // Note that the URL is different from the WebSocket URL
-        return new SockJS('http://localhost:8080/ws');
+        return new SockJS(this.server+'/ws');
       };
     }
     

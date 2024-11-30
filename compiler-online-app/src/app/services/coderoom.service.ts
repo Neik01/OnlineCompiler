@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SERVER_URL } from '../Constant/constant';
 import { CodeRoom } from '../Model/EntityResponse';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoderoomService {
 
-  codeRoomUrl = SERVER_URL+"/code"
+  codeRoomUrl = environment.SERVER_URL+"/code"
   private routeId = new BehaviorSubject<string>("");
   private codemirrorMode = new BehaviorSubject<string>("");
   private codemirrorTheme = new BehaviorSubject<string>("");

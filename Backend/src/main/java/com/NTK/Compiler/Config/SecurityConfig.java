@@ -40,7 +40,7 @@ public class SecurityConfig {
                 })
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**","/ws/**","/api/codeExec/**").permitAll()
+                        .requestMatchers("/api/auth/**","/api/ws/**","/ws/**","/api/codeExec/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session->session.

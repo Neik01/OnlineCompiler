@@ -1,4 +1,3 @@
-export const SERVER_URL = 'http://localhost:8080/api'
 
 export const codeMirrorLanguages = [
   { "id": 45, "name": "Assembly (NASM 2.14.02)", "mode": "gas", "mime": "text/x-gas" },

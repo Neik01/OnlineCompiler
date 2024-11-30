@@ -2,17 +2,9 @@ spring:
   security:
     oauth2:
       resourceserver:
-        opaque-token:
-            introspection-uri: https://www.googleapis.com/
-            clientId: 56849159229-2urdn30t06me6inc5r216qvk9jb29gsv.apps.googleusercontent.com
-            clientSecret: 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
         jwt:
           issuer-uri: http://localhost:8081/realms/codeshare
-          jwk-set-uri:  ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          jwk-set-uri:  http://keycloak:8080/realms/codeshare/protocol/openid-connect/certs
 
 
-jwt:
-  auth:
-    converter:
-      resource-id: codeshare-rest-api
-      principle-attribute: preferred_username
+

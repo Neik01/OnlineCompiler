@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit{
       }
     })
     
-    // this.authService.getLoginState().subscribe(value => this.isLogin = value)
+    this.kcService.isLoggedIn.subscribe(value => this.isLogin = value);
   }
 
  navToAuth(){

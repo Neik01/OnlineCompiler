@@ -4,6 +4,7 @@ import { LoginResponse } from '../Model/LoginResponse';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { User } from '../Model/EntityResponse';
 import { Token } from '../Model/Token';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -11,7 +12,8 @@ import { Token } from '../Model/Token';
 })
 export class AuthService {
  
-  server = "http://localhost:8080/api/auth"
+  server = environment.SERVER_URL+"/auth"
+  
   isLogin = new BehaviorSubject<boolean>(false);
   redirectUrl:string = null;
   user = new BehaviorSubject<User>(null);
@@ -56,27 +58,4 @@ export class AuthService {
     this.isLogin.next(false);
   }
 
-  loginWithGoogle(){
-
-  }
-
-  getGoogleLoginUrl(){
-
-    return this.httpClient.get("http://localhost:8080/oauth2/google/url");
-  }
-
-  getGoogleToken(code: string): Observable<boolean> {
-    return this.httpClient.get<Token>("http://localhost:8080/oauth2/google/callback?code=" + code, {observe: "response"})
-      .pipe(map((response: HttpResponse<Token>) => {
-        console.log("Got token "+ response.body.token);
-        
-        if (response.status === 200 && response.body !== null) {
-          
-          localStorage.setItem("jwtToken",response.body.token)
-          return true;
-        } else {
-          return false;
-        }
-      }));
-  }
 }

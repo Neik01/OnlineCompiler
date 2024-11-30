@@ -9,12 +9,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class WebclientConfig {
 
+    @Value("${rapidapi.key}")
+    private String rapidApiKey;
+
     @Bean
     public WebClient judge0Client() {
         return WebClient.builder()
                 .baseUrl("https://judge0-ce.p.rapidapi.com")
                 .defaultHeader("x-rapidapi-host", "judge0-ce.p.rapidapi.com")
-                .defaultHeader("x-rapidapi-key", "93f9946680mshd96bc9bfed2a616p197adbjsn9d1073f797ca")
+                .defaultHeader("x-rapidapi-key", rapidApiKey)
                 .build();
     }
 

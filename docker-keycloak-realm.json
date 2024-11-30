@@ -1,0 +1,17 @@
+{
+    "realm": "codeshare",
+    "enabled": true,
+    "registrationAllowed": true, 
+    "clients": [
+      {
+        "clientId": "codeshare",
+        "rootUrl": "http://localhost:4200",
+        "adminUrl": "http://localhost:4200",
+        "redirectUris": ["http://localhost:4200/*"],
+        "webOrigins": ["*"],
+        "publicClient": true,
+        "protocol": "openid-connect"
+      }
+    ]
+  }
+  
