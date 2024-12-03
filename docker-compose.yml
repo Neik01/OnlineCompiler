@@ -35,7 +35,7 @@ services:
       start-dev
       --import-realm
     volumes:
-      - .backend/docker-keycloak-realm.json:/opt/keycloak/data/import/codeshare-realm.json
+      - /Backend/docker-keycloak-realm.json:/opt/keycloak/data/import/codeshare-realm.json
 
   mongo:
     container_name: mongo
